@@ -1,0 +1,56 @@
+// Auth pages styles
+@import "../variables";
+@import "../mixins";
+
+.auth {
+  &__container {
+    min-height: 100vh;
+    @include flex-center;
+    padding: $spacing-lg;
+    background: $bg-secondary;
+  }
+
+  &__card {
+    @include card-base;
+    padding: $spacing-2xl;
+    width: 100%;
+    max-width: 400px;
+
+    h2 {
+      text-align: center;
+      margin-bottom: $spacing-xl;
+      color: $text-primary;
+    }
+  }
+
+  &__form {
+    .form__group {
+      margin-bottom: $spacing-lg;
+    }
+
+    .form__submit {
+      margin-top: $spacing-lg;
+    }
+  }
+
+  &__switch {
+    text-align: center;
+    margin-top: $spacing-lg;
+
+    p {
+      color: $text-secondary;
+      font-size: $font-size-sm;
+      margin-bottom: $spacing-sm;
+    }
+
+    a {
+      color: $primary-color;
+      text-decoration: none;
+      font-weight: $font-weight-medium;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

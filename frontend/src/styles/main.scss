@@ -1,0 +1,24 @@
+// Main SCSS file for the webshop
+// This file imports all the SCSS partials and should be imported in main.jsx
+
+// Variables and mixins
+@import "variables";
+@import "mixins";
+
+// Base styles
+@import "base";
+
+// Components
+@import "components/navbar";
+@import "components/item-card";
+@import "components/footer";
+@import "components/cart";
+@import "components/forms";
+
+// Pages
+@import "pages/home";
+@import "pages/auth";
+@import "pages/item-details";
+@import "pages/my-items";
+@import "pages/purchase-history";
+@import "pages/category";
