@@ -1,6 +1,6 @@
 // Form component styles
-@import "../variables";
-@import "../mixins";
+@use "../variables" as *;
+@use "../mixins" as *;
 
 .form {
   &__group {

@@ -1,0 +1,278 @@
+// Currency Selector Styles
+.currency-selector {
+  &__title {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  &__section {
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  &__description {
+    margin: 0.5rem 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  // Compact version for navbar
+  &--compact {
+    position: relative;
+    display: inline-block;
+
+    .currency-selector__trigger {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--text-primary);
+
+      &:hover {
+        background: var(--bg-primary);
+        border-color: var(--primary-color);
+        border-color: #adb5bd;
+      }
+
+      .currency-flag {
+        font-size: 1rem;
+      }
+
+      .currency-code {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+    }
+
+    .currency-selector__dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      z-index: 9999;
+      min-width: 120px;
+      overflow: hidden;
+      opacity: 1;
+      visibility: visible;
+
+      .currency-option {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.5rem;
+        border: none;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: var(--bg-primary);
+
+          .currency-code {
+            color: var(--text-primary);
+          }
+        }
+
+        &--active {
+          background: var(--bg-accent);
+          color: var(--text-primary);
+
+          .currency-code {
+            color: var(--text-primary) !important;
+          }
+        }
+
+        .currency-flag {
+          font-size: 1rem;
+        }
+
+        .currency-info {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          flex: 1;
+
+          .currency-code {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+          }
+        }
+      }
+    }
+  }
+}
+
+// Currency options grid
+.currency-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.currency-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-secondary);
+  }
+
+  &--active {
+    border-color: var(--primary-color);
+    background: var(--bg-accent);
+
+    .currency-code {
+      color: var(--primary-color);
+      font-weight: 700;
+    }
+  }
+
+  .currency-flag {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .currency-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+
+    .currency-code {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.1rem;
+    }
+
+    .currency-name {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+  }
+
+  .currency-symbol {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+}
+
+// Custom checkbox styling
+.currency-selector__checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  .checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    position: relative;
+    transition: all 0.2s ease;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 2px;
+      width: 6px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+  }
+
+  input[type="checkbox"]:checked + .checkmark {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  .label-text {
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .currency-selector {
+    &--compact {
+      .currency-selector__dropdown {
+        right: auto;
+        left: 0;
+      }
+    }
+  }
+
+  .currency-option {
+    padding: 0.5rem;
+
+    .currency-flag {
+      font-size: 1.25rem;
+    }
+
+    .currency-info {
+      .currency-code {
+        font-size: 0.875rem;
+      }
+
+      .currency-name {
+        font-size: 0.8rem;
+      }
+    }
+
+    .currency-symbol {
+      font-size: 1rem;
+    }
+  }
+}

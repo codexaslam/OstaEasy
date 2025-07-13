@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { API_ENDPOINTS } from "../config/api";
 
 const AuthContext = createContext();
 
@@ -23,9 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = useCallback(async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/users/profile"
-      );
+      const response = await axios.get(API_ENDPOINTS.PROFILE);
       setUser(response.data);
     } catch (error) {
       console.error("Error fetching user:", error);

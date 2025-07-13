@@ -1,0 +1,505 @@
+// Home page CSS Module
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.home {
+  min-height: 100vh;
+}
+
+// Hero Section
+.hero {
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+  background-color: #f8f9fa;
+}
+
+.heroSlide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  background-size: cover;
+  background-position: center;
+
+  &.active {
+    opacity: 1;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  padding: 0 20px;
+}
+
+.heroText {
+  max-width: 600px;
+
+  h1 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    font-family: "Jost", sans-serif;
+  }
+
+  .subtitle {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #ffd700;
+  }
+
+  p {
+    font-size: 18px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+}
+
+.heroBtn {
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  font-family: "Jost", sans-serif;
+
+  &:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.heroNav {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 3;
+}
+
+.heroDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.active {
+    background: #fff;
+  }
+}
+
+// Features Section
+.features {
+  padding: 80px 0;
+  background: #fff;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+}
+
+.featureCard {
+  text-align: center;
+  padding: 32px 24px;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+
+  .icon {
+    font-size: 48px;
+    color: #000;
+    margin-bottom: 16px;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #212529;
+    font-family: "Jost", sans-serif;
+  }
+
+  p {
+    color: #6c757d;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+// Categories Section
+.categories {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #212529;
+  font-family: "Jost", sans-serif;
+}
+
+.sectionSubtitle {
+  text-align: center;
+  color: #6c757d;
+  font-size: 18px;
+  margin-bottom: 48px;
+  line-height: 1.6;
+}
+
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.categoryCard {
+  position: relative;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  background-size: cover;
+  background-position: center;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    transition: background 0.3s ease;
+  }
+
+  &:hover::before {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.categoryContent {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  color: #fff;
+  z-index: 2;
+
+  h3 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-family: "Jost", sans-serif;
+  }
+
+  p {
+    font-size: 14px;
+    opacity: 0.9;
+    margin: 0;
+  }
+}
+
+// Products Section
+.products {
+  padding: 80px 0;
+  background: #fff;
+}
+
+.productsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.addItemBtn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Jost", sans-serif;
+
+  &:hover {
+    background: #333;
+    transform: translateY(-1px);
+  }
+}
+
+.itemsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.loadingMessage,
+.noItemsMessage {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+// Testimonials Section
+.testimonials {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.testimonialsContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.testimonialSlider {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.testimonial {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+
+  &.active {
+    opacity: 1;
+  }
+
+  blockquote {
+    font-size: 20px;
+    font-style: italic;
+    color: #212529;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  cite {
+    font-size: 16px;
+    color: #6c757d;
+    font-weight: 500;
+  }
+}
+
+.testimonialNav {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.testimonialDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &.active {
+    background: #000;
+  }
+}
+
+// Newsletter Section
+.newsletter {
+  padding: 80px 0;
+  background: #000;
+  color: #fff;
+  text-align: center;
+}
+
+.newsletterForm {
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+
+  input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+
+    &::placeholder {
+      color: #999;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #fff;
+    }
+  }
+
+  button {
+    background: #fff;
+    color: #000;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "Jost", sans-serif;
+
+    &:hover {
+      background: #f8f9fa;
+    }
+  }
+}
+
+// Media queries
+@media (max-width: 768px) {
+  .hero {
+    height: 400px;
+  }
+
+  .heroText {
+    h1 {
+      font-size: 32px;
+    }
+
+    .subtitle {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+  }
+
+  .heroBtn {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+
+  .features,
+  .categories,
+  .products,
+  .testimonials,
+  .newsletter {
+    padding: 60px 0;
+  }
+
+  .sectionTitle {
+    font-size: 28px;
+  }
+
+  .sectionSubtitle {
+    font-size: 16px;
+  }
+
+  .featuresGrid {
+    gap: 32px;
+  }
+
+  .categoriesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .itemsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .productsHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .newsletterForm {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .hero {
+    height: 350px;
+  }
+
+  .heroText {
+    h1 {
+      font-size: 28px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+    }
+  }
+
+  .itemsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .categoryCard {
+    height: 150px;
+  }
+
+  .testimonial blockquote {
+    font-size: 18px;
+  }
+}

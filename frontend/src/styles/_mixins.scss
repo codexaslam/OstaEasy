@@ -1,4 +1,5 @@
 // Mixins for common patterns
+@use "variables" as *;
 
 // Flexbox mixins
 @mixin flex-center {
@@ -46,11 +47,11 @@
 
 @mixin button-primary {
   @include button-base;
-  background-color: $primary-color;
-  color: white;
+  background-color: var(--primary-color);
+  color: var(--bg-primary);
 
   &:hover:not(:disabled) {
-    background-color: lighten($primary-color, 10%);
+    background-color: var(--text-secondary);
     transform: translateY(-1px);
   }
 }
@@ -58,12 +59,12 @@
 @mixin button-secondary {
   @include button-base;
   background-color: transparent;
-  color: $primary-color;
-  border: 1px solid $border-color;
+  color: var(--primary-color);
+  border: 1px solid var(--border-color);
 
   &:hover:not(:disabled) {
-    background-color: $bg-secondary;
-    border-color: $primary-color;
+    background-color: var(--bg-secondary);
+    border-color: var(--primary-color);
   }
 }
 

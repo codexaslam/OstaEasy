@@ -2,12 +2,14 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from django.db.models import Count, Sum, Avg, Q
+from datetime import datetime, timedelta
 from rest_framework import generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.db import transaction
-from shop.models import Item, CartItem
+from shop.models import Item, CartItem, Purchase
 
 User = get_user_model()
 
@@ -221,3 +223,166 @@ def populate_database(request):
         return Response({
             'error': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def analytics_overview(request):
+    """Get overall analytics data for the dashboard"""
+    try:
+        # Total counts
+        total_items = Item.objects.count()
+        total_users = User.objects.count()
+        total_purchases = Purchase.objects.count()
+        active_listings = Item.objects.filter(buyer__isnull=True).count()
+        
+        # Revenue data
+        total_revenue = Purchase.objects.aggregate(
+            total=Sum('price')
+        )['total'] or 0
+        
+        # Recent activity (last 30 days)
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        recent_users = User.objects.filter(date_joined__gte=thirty_days_ago).count()
+        recent_purchases = Purchase.objects.filter(purchase_date__gte=thirty_days_ago).count()
+        recent_listings = Item.objects.filter(date_added__gte=thirty_days_ago).count()
+        
+        # Category breakdown
+        category_stats = Item.objects.values('category').annotate(
+            count=Count('id'),
+            sold=Count('id', filter=Q(buyer__isnull=False))
+        ).order_by('-count')
+        
+        # Top sellers
+        top_sellers = User.objects.annotate(
+            items_sold=Count('item_seller', filter=Q(item_seller__buyer__isnull=False)),
+            revenue=Sum('item_seller__purchase__price')
+        ).filter(items_sold__gt=0).order_by('-revenue')[:5]
+        
+        return Response({
+            'overview': {
+                'total_items': total_items,
+                'total_users': total_users,
+                'total_purchases': total_purchases,
+                'active_listings': active_listings,
+                'total_revenue': float(total_revenue),
+                'recent_users': recent_users,
+                'recent_purchases': recent_purchases,
+                'recent_listings': recent_listings
+            },
+            'categories': list(category_stats),
+            'top_sellers': [
+                {
+                    'username': seller.username,
+                    'items_sold': seller.items_sold,
+                    'revenue': float(seller.revenue or 0)
+                }
+                for seller in top_sellers
+            ]
+        })
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def sales_analytics(request):
+    """Get sales analytics for charts and graphs"""
+    try:
+        # Sales over time (last 30 days)
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        daily_sales = []
+        
+        for i in range(30):
+            date = thirty_days_ago + timedelta(days=i)
+            sales_count = Purchase.objects.filter(
+                purchase_date__date=date.date()
+            ).count()
+            revenue = Purchase.objects.filter(
+                purchase_date__date=date.date()
+            ).aggregate(total=Sum('price'))['total'] or 0
+            
+            daily_sales.append({
+                'date': date.strftime('%Y-%m-%d'),
+                'sales': sales_count,
+                'revenue': float(revenue)
+            })
+        
+        # Price range distribution
+        price_ranges = [
+            {'label': '$0-$50', 'min': 0, 'max': 50},
+            {'label': '$50-$100', 'min': 50, 'max': 100},
+            {'label': '$100-$250', 'min': 100, 'max': 250},
+            {'label': '$250-$500', 'min': 250, 'max': 500},
+            {'label': '$500+', 'min': 500, 'max': None}
+        ]
+        
+        price_distribution = []
+        for range_data in price_ranges:
+            if range_data['max']:
+                count = Item.objects.filter(
+                    price__gte=range_data['min'],
+                    price__lt=range_data['max']
+                ).count()
+            else:
+                count = Item.objects.filter(price__gte=range_data['min']).count()
+            
+            price_distribution.append({
+                'label': range_data['label'],
+                'count': count
+            })
+        
+        return Response({
+            'daily_sales': daily_sales,
+            'price_distribution': price_distribution
+        })
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_analytics(request):
+    """Get user analytics and activity data"""
+    try:
+        # User registration over time (last 30 days)
+        thirty_days_ago = timezone.now() - timedelta(days=30)
+        daily_registrations = []
+        
+        for i in range(30):
+            date = thirty_days_ago + timedelta(days=i)
+            count = User.objects.filter(date_joined__date=date.date()).count()
+            daily_registrations.append({
+                'date': date.strftime('%Y-%m-%d'),
+                'registrations': count
+            })
+        
+        # User activity breakdown
+        total_users = User.objects.count()
+        users_with_items = User.objects.filter(item_seller__isnull=False).distinct().count()
+        users_with_purchases = User.objects.filter(purchase_buyer__isnull=False).distinct().count()
+        
+        # Most active users
+        active_users = User.objects.annotate(
+            total_activity=Count('item_seller') + Count('purchase_buyer')
+        ).filter(total_activity__gt=0).order_by('-total_activity')[:10]
+        
+        return Response({
+            'daily_registrations': daily_registrations,
+            'user_stats': {
+                'total_users': total_users,
+                'users_with_items': users_with_items,
+                'users_with_purchases': users_with_purchases,
+                'inactive_users': total_users - users_with_items - users_with_purchases
+            },
+            'active_users': [
+                {
+                    'username': user.username,
+                    'activity_score': user.total_activity,
+                    'date_joined': user.date_joined.strftime('%Y-%m-%d')
+                }
+                for user in active_users
+            ]
+        })
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)

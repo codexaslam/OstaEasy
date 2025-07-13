@@ -1,6 +1,6 @@
 // Footer component styles
-@import "../variables";
-@import "../mixins";
+@use "../variables" as *;
+@use "../mixins" as *;
 
 .footer {
   background-color: $bg-dark;

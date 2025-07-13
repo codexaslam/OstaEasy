@@ -1,6 +1,6 @@
 // Base styles and reset
-@import "variables";
-@import "mixins";
+@use "variables" as *;
+@use "mixins" as *;
 
 * {
   margin: 0;
@@ -205,6 +205,36 @@ ol {
   }
   &--xl {
     margin-bottom: $spacing-xl;
+  }
+}
+
+.ml {
+  &--sm {
+    margin-left: $spacing-sm;
+  }
+  &--md {
+    margin-left: $spacing-md;
+  }
+  &--lg {
+    margin-left: $spacing-lg;
+  }
+  &--xl {
+    margin-left: $spacing-xl;
+  }
+}
+
+.mr {
+  &--sm {
+    margin-right: $spacing-sm;
+  }
+  &--md {
+    margin-right: $spacing-md;
+  }
+  &--lg {
+    margin-right: $spacing-lg;
+  }
+  &--xl {
+    margin-right: $spacing-xl;
   }
 }
 

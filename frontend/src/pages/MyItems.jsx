@@ -1,12 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import AddItemForm from "../components/AddItemForm";
 import EditItemForm from "../components/EditItemForm";
 import ItemCard from "../components/ItemCard";
+import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
-import "./MyItems.css";
 
 const MyItems = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [items, setItems] = useState({
     on_sale: [],
     sold: [],
@@ -24,9 +27,7 @@ const MyItems = () => {
 
   const fetchMyItems = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/shop/my-items/"
-      );
+      const response = await axios.get(API_ENDPOINTS.MY_ITEMS);
       setItems(response.data);
     } catch (error) {
       console.error("Error fetching items:", error);
@@ -40,6 +41,11 @@ const MyItems = () => {
     fetchMyItems();
   };
 
+  const handleItemAdded = () => {
+    fetchMyItems();
+    setActiveTab("on_sale"); // Switch to on_sale tab after adding item
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString();
   };
@@ -48,21 +54,21 @@ const MyItems = () => {
     return (
       <div className="my-items-container">
         <div className="auth-message">
-          <h2>Please login to view your items</h2>
+          <h2>{t("common.pleaseLoginToViewCart")}</h2>
         </div>
       </div>
     );
   }
 
   if (loading) {
-    return <div className="loading">Loading your items...</div>;
+    return <div className="loading">{t("common.loading")}</div>;
   }
 
   const renderItems = (itemsList, type) => {
     if (itemsList.length === 0) {
       return (
         <div className="no-items">
-          <p>No items in this category</p>
+          <p>{t("myItems.noItems")}</p>
         </div>
       );
     }
@@ -109,26 +115,36 @@ const MyItems = () => {
   return (
     <div className="my-items-container">
       <div className="my-items-header">
-        <h1>My Items</h1>
+        <h1>{t("myItems.myItems")}</h1>
         <div className="stats">
-          <span>On Sale: {items.on_sale.length}</span>
-          <span>Sold: {items.sold.length}</span>
+          <span>
+            {t("itemCard.onSale")}: {items.on_sale.length}
+          </span>
+          <span>
+            {t("myItems.sold")}: {items.sold.length}
+          </span>
           <span>Purchased: {items.purchased.length}</span>
         </div>
       </div>
 
       <div className="tabs">
         <button
+          className={`tab ${activeTab === "add_item" ? "active" : ""}`}
+          onClick={() => setActiveTab("add_item")}
+        >
+          + {t("myItems.addNewItem") || "Add New Item"}
+        </button>
+        <button
           className={`tab ${activeTab === "on_sale" ? "active" : ""}`}
           onClick={() => setActiveTab("on_sale")}
         >
-          On Sale ({items.on_sale.length})
+          {t("itemCard.onSale")} ({items.on_sale.length})
         </button>
         <button
           className={`tab ${activeTab === "sold" ? "active" : ""}`}
           onClick={() => setActiveTab("sold")}
         >
-          Sold ({items.sold.length})
+          {t("myItems.sold")} ({items.sold.length})
         </button>
         <button
           className={`tab ${activeTab === "purchased" ? "active" : ""}`}
@@ -139,7 +155,11 @@ const MyItems = () => {
       </div>
 
       <div className="tab-content">
-        {renderItems(items[activeTab], activeTab)}
+        {activeTab === "add_item" ? (
+          <AddItemForm onItemAdded={handleItemAdded} />
+        ) : (
+          renderItems(items[activeTab], activeTab)
+        )}
       </div>
 
       {editingItem && (

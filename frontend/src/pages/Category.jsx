@@ -8,11 +8,13 @@ import {
 import { useParams, useSearchParams } from "react-router-dom";
 import ItemCard from "../components/ItemCard";
 import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../hooks/useCart";
 
 const Category = () => {
   const { category } = useParams();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { addToCart } = useCart();
   const [items, setItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -130,15 +132,7 @@ const Category = () => {
 
   const handleAddToCart = async (itemId) => {
     try {
-      await axios.post(
-        "http://localhost:8000/api/shop/cart/add/",
-        { item_id: itemId, quantity: 1 },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await addToCart(itemId);
     } catch (error) {
       console.error("Error adding to cart:", error);
       throw error;

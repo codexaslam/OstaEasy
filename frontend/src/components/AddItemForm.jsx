@@ -1,22 +1,25 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
-import { AlertCircle, Package, Plus } from "lucide-react";
+import {
+  AlertCircle,
+  DollarSign,
+  Euro,
+  FileText,
+  Image,
+  Package,
+  Plus,
+  Tag,
+  Upload,
+} from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
+import { API_ENDPOINTS } from "../config/api";
+import { useCurrency } from "../hooks/useCurrency";
+import "./AddItemForm.scss";
 
 const AddItemForm = ({ onItemAdded }) => {
+  const { t } = useTranslation();
+  const { primaryCurrency } = useCurrency();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -48,15 +51,19 @@ const AddItemForm = ({ onItemAdded }) => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.post(
-        "http://localhost:8000/api/shop/items/create/",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+
+      // Include currency information with the price
+      const itemData = {
+        ...formData,
+        currency: primaryCurrency, // Add currency info
+        price: parseFloat(formData.price), // Ensure price is a number
+      };
+
+      await axios.post(API_ENDPOINTS.ITEM_CREATE, itemData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setFormData({
         title: "",
         description: "",
@@ -66,130 +73,206 @@ const AddItemForm = ({ onItemAdded }) => {
       });
       onItemAdded();
       Swal.fire({
-        title: "Success!",
-        text: "Item added successfully!",
+        title: t("addItemForm.success.itemAdded"),
+        text: t("addItemForm.success.itemAddedDesc"),
         icon: "success",
-        confirmButtonText: "OK",
-        confirmButtonColor: "#0ea5e9",
+        confirmButtonText: t("common.ok"),
+        confirmButtonColor: "#000",
+        background: "#fff",
+        color: "#000",
       });
     } catch (error) {
-      setError(error.response?.data?.error || "Failed to add item");
+      setError(
+        error.response?.data?.error || t("addItemForm.error.failedToAdd")
+      );
+      Swal.fire({
+        title: t("common.error"),
+        text: error.response?.data?.error || t("addItemForm.error.failedToAdd"),
+        icon: "error",
+        confirmButtonText: t("addItemForm.error.tryAgain"),
+        confirmButtonColor: "#000",
+        background: "#fff",
+        color: "#000",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Package className="h-5 w-5 text-blue-600" />
-          Add New Item
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className="add-item-container">
+      <div className="add-item-form">
+        {/* Header Section */}
+        <div className="form-header">
+          <div className="header-icon">
+            <Package size={32} />
+          </div>
+          <div className="header-content">
+            <h2 className="form-title">{t("addItemForm.addNewItem")}</h2>
+            <p className="form-subtitle">{t("addItemForm.createListing")}</p>
+          </div>
+        </div>
+
+        {/* Error Alert */}
         {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertCircle className="h-4 w-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
+          <div className="error-alert">
+            <AlertCircle size={20} />
+            <span>{error}</span>
+          </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="item-form">
+          {/* Title Field */}
+          <div className="form-group">
+            <label className="form-label flex items-center">
+              <Tag size={18} />
+              {t("addItemForm.title")}
+            </label>
+            <input
+              className="form-input"
               name="title"
               value={formData.title}
               onChange={handleChange}
               required
-              placeholder="Enter item title"
+              placeholder={t("addItemForm.titlePlaceholder")}
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
+          {/* Description Field */}
+          <div className="form-group">
+            <label className="form-label">
+              <FileText size={18} />
+              {t("addItemForm.description")}
+            </label>
+            <textarea
+              className="form-textarea"
               name="description"
               value={formData.description}
               onChange={handleChange}
               required
-              placeholder="Describe your item"
+              placeholder={t("addItemForm.descriptionPlaceholder")}
               rows={4}
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="price">Price ($)</Label>
-            <Input
-              id="price"
-              name="price"
-              type="number"
-              value={formData.price}
-              onChange={handleChange}
-              required
-              min="0"
-              step="0.01"
-              placeholder="0.00"
-            />
+          {/* Price and Category Row */}
+          <div className="form-row">
+            <div className="form-group half-width">
+              <label className="form-label">
+                {primaryCurrency === "EUR" ? (
+                  <Euro size={18} />
+                ) : (
+                  <DollarSign size={18} />
+                )}
+                {t("addItemForm.price")} ({primaryCurrency})
+              </label>
+              <input
+                className="form-input price-input"
+                name="price"
+                type="number"
+                value={formData.price}
+                onChange={handleChange}
+                required
+                min="0"
+                step="0.01"
+                placeholder={t("addItemForm.pricePlaceholder")}
+              />
+            </div>
+
+            <div className="form-group half-width">
+              <label className="form-label">
+                <Package size={18} />
+                {t("addItemForm.category")}
+              </label>
+              <select
+                className="form-select"
+                value={formData.category}
+                onChange={(e) => handleCategoryChange(e.target.value)}
+              >
+                <option value="electronics">
+                  📱 {t("addItemForm.categories.electronics")}
+                </option>
+                <option value="clothing">
+                  👕 {t("addItemForm.categories.clothing")}
+                </option>
+                <option value="home-garden">
+                  🏠 {t("addItemForm.categories.home-garden")}
+                </option>
+                <option value="sports-outdoors">
+                  ⚽ {t("addItemForm.categories.sports-outdoors")}
+                </option>
+                <option value="books-media">
+                  � {t("addItemForm.categories.books-media")}
+                </option>
+                <option value="toys-games">
+                  🎮 {t("addItemForm.categories.toys-games")}
+                </option>
+              </select>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="category">Category</Label>
-            <Select
-              value={formData.category}
-              onValueChange={handleCategoryChange}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="clothing">Clothing</SelectItem>
-                <SelectItem value="accessories">Accessories</SelectItem>
-                <SelectItem value="bags">Bags</SelectItem>
-                <SelectItem value="shoes">Shoes</SelectItem>
-                <SelectItem value="sunglasses">Sunglasses</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="image_url">Image URL (optional)</Label>
-            <Input
-              id="image_url"
-              name="image_url"
-              type="url"
-              value={formData.image_url}
-              onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
-            />
-            <p className="text-sm text-gray-600">
-              Enter a URL to an image for your item
+          {/* Image URL Field */}
+          <div className="form-group">
+            <label className="form-label">
+              <Image size={16} />
+              {t("addItemForm.imageUrl")}
+            </label>
+            <div className="image-input-container">
+              <input
+                className="form-input image-input"
+                name="image_url"
+                type="url"
+                value={formData.image_url}
+                onChange={handleChange}
+                placeholder={t("addItemForm.imageUrlPlaceholder")}
+              />
+              <div className="image-preview">
+                {formData.image_url ? (
+                  <img
+                    src={formData.image_url}
+                    alt={t("addItemForm.imagePreview")}
+                    onError={(e) => (e.target.style.display = "none")}
+                  />
+                ) : (
+                  <div className="image-placeholder">
+                    <Upload size={24} />
+                    <span>{t("addItemForm.imagePreview")}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <p className="field-hint">
+              Add a high-quality image to attract more buyers
             </p>
           </div>
 
-          <Button
+          {/* Submit Button */}
+          <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className={`submit-button ${loading ? "loading" : ""}`}
           >
             {loading ? (
-              <div className="flex items-center">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Adding...
-              </div>
+              <>
+                <div className="loading-spinner"></div>
+                {t("addItemForm.adding")}
+              </>
             ) : (
-              <div className="flex items-center">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Item
-              </div>
+              <>
+                <Plus size={20} />
+                {t("addItemForm.addItem")}
+              </>
             )}
-          </Button>
+          </button>
         </form>
-      </CardContent>
-    </Card>
+
+        {/* Footer Info */}
+        <div className="form-footer">
+          <p>{t("addItemForm.footer.note")}</p>
+        </div>
+      </div>
+    </div>
   );
 };
 

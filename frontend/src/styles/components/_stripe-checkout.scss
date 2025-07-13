@@ -1,0 +1,244 @@
+// Stripe Checkout component styles
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.stripe-checkout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  .checkout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #ffffff;
+
+    h2 {
+      margin: 0;
+      color: $text-primary;
+      font-size: 18px;
+      font-weight: 500;
+      font-family: "Jost", sans-serif;
+      letter-spacing: -0.5px;
+    }
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: #000;
+    }
+  }
+
+  .checkout-content {
+    background: white;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .checkout-loading {
+    padding: 40px;
+    text-align: center;
+
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid $primary-color;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+  }
+
+  .order-summary {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+
+    h3 {
+      margin: 0 0 16px 0;
+      color: $text-primary;
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .summary-items {
+    margin-bottom: 16px;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+
+  .item-details {
+    flex: 1;
+    margin-right: 12px;
+
+    .item-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: $text-primary;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .item-quantity {
+      font-size: 12px;
+      color: $text-secondary;
+    }
+  }
+
+  .item-price {
+    font-size: 14px;
+    font-weight: 500;
+    color: $text-primary;
+    text-align: right;
+    color: #1a1a1a;
+  }
+
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 2px solid #e0e0e0;
+    margin-top: 12px;
+
+    .total-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    .total-amount {
+      font-size: 18px;
+      font-weight: 700;
+      color: $text-primary;
+    }
+  }
+
+  .checkout-form {
+    padding: 20px;
+  }
+
+  .payment-element-container {
+    margin-bottom: 24px;
+  }
+
+  .checkout-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+
+  .cancel-btn {
+    padding: 12px 24px;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #666;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #f8f9fa;
+      border-color: #ced4da;
+    }
+  }
+
+  .pay-btn {
+    padding: 12px 24px;
+    background: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 120px;
+
+    &:hover:not(:disabled) {
+      background: #333;
+    }
+
+    &:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .stripe-checkout {
+    padding: 10px;
+
+    .checkout-content {
+      max-width: 100%;
+    }
+
+    .checkout-header {
+      padding: 16px;
+    }
+
+    .order-summary,
+    .checkout-form {
+      padding: 16px;
+    }
+
+    .checkout-actions {
+      flex-direction: column;
+
+      .cancel-btn,
+      .pay-btn {
+        width: 100%;
+      }
+    }
+  }
+}

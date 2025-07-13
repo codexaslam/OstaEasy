@@ -1,81 +1,84 @@
+import { useTranslation } from "react-i18next";
 import { LiaFacebookF, LiaInstagram, LiaTwitter } from "react-icons/lia";
 import { Link } from "react-router-dom";
-import "./Footer.css";
+import styles from "./Footer.module.scss";
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-content">
-          <div className="footer-section">
-            <div className="footer-brand">
-              <h3>OSTAEASY</h3>
-              <p>
-                Your trusted online marketplace for quality products and
-                exceptional service.
-              </p>
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.section}>
+            <div className={styles.brand}>
+              <h3>{t("footer.brandName")}</h3>
+              <p>{t("footer.brandDescription")}</p>
             </div>
           </div>
 
-          <div className="footer-section">
-            <h4>Quick Links</h4>
+          <div className={styles.section}>
+            <h4>{t("footer.quickLinks")}</h4>
             <ul>
               <li>
-                <Link to="/">Shop</Link>
+                <Link to="/">{t("footer.shop")}</Link>
               </li>
               <li>
-                <Link to="/about">About Us</Link>
+                <Link to="/about">{t("footer.aboutUs")}</Link>
               </li>
               <li>
-                <Link to="/contact">Contact</Link>
+                <Link to="/contact">{t("navigation.contact")}</Link>
               </li>
               <li>
-                <Link to="/faq">FAQ</Link>
+                <Link to="/faq">{t("footer.faq")}</Link>
               </li>
             </ul>
           </div>
 
-          <div className="footer-section">
-            <h4>Account</h4>
+          <div className={styles.section}>
+            <h4>{t("footer.account")}</h4>
             <ul>
               <li>
-                <Link to="/account">My Account</Link>
+                <Link to="/account">{t("footer.myAccount")}</Link>
               </li>
               <li>
-                <Link to="/cart">Shopping Cart</Link>
+                <Link to="/cart">{t("footer.shoppingCart")}</Link>
               </li>
               <li>
-                <Link to="/purchases">Order History</Link>
+                <Link to="/purchases">{t("footer.orderHistory")}</Link>
               </li>
               <li>
-                <Link to="/myitems">My Items</Link>
+                <Link to="/myitems">{t("userActions.myItems")}</Link>
               </li>
             </ul>
           </div>
 
-          <div className="footer-section">
-            <h4>Customer Service</h4>
+          <div className={styles.section}>
+            <h4>{t("footer.customerService")}</h4>
             <ul>
               <li>
-                <a href="#shipping">Shipping Info</a>
+                <a href="#shipping">{t("footer.shippingInfo")}</a>
               </li>
               <li>
-                <a href="#returns">Returns & Exchanges</a>
+                <a href="#returns">{t("footer.returnsExchanges")}</a>
               </li>
               <li>
-                <a href="#privacy">Privacy Policy</a>
+                <a href="#privacy">{t("footer.privacyPolicy")}</a>
               </li>
               <li>
-                <a href="#terms">Terms of Service</a>
+                <a href="#terms">{t("footer.termsOfService")}</a>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="footer-bottom">
-          <div className="footer-bottom-content">
-            <p>&copy; 2025 OSTAEASY. All rights reserved.</p>
-            <div className="footer-social">
+        <div className={styles.bottom}>
+          <div className={styles.bottomContent}>
+            <p>
+              &copy; 2025 {t("footer.brandName")}.{" "}
+              {t("footer.allRightsReserved")}.
+            </p>
+            <div className={styles.social}>
               <a href="#" aria-label="Facebook">
                 <LiaFacebookF size={20} />
               </a>

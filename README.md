@@ -186,6 +186,18 @@ After database population, you can use these credentials:
 - **testuser5** / pass5 (Buyer)
 - **testuser6** / pass6 (Buyer)
 
+### Test Payment Information
+
+For testing the checkout functionality, use the following Stripe test card details:
+
+**Credit Card Number:** `4242 4242 4242 4242`  
+**Expiry Date:** Use any valid future date (e.g., `12/34`)  
+**CVC:** Use any three-digit number (e.g., `123`)  
+**Name:** Any name  
+**Address:** Any address
+
+> **Note:** These are Stripe's official test card numbers. No real money will be charged, and these cards will only work in test/development mode.
+
 ## Features Overview
 
 ### For Anonymous Users
@@ -217,6 +229,45 @@ After database population, you can use these credentials:
 - Clean REST API
 - Single Page Application routing
 - **1000 realistic demo items** across 6 categories with varied pricing and descriptions
+
+## Testing Guide
+
+### Testing Payment Checkout
+
+To test the complete checkout flow with Stripe integration:
+
+1. **Add items to cart** - Login with any test user and add items to cart
+2. **Proceed to checkout** - Click the cart icon and proceed to payment
+3. **Use test payment details:**
+   ```
+   Card Number: 4242 4242 4242 4242
+   Expiry Date: 12/34 (or any valid future date)
+   CVC: 123 (or any three-digit number)
+   Name: Test User
+   Address: Any test address
+   ```
+4. **Complete payment** - The test payment will process successfully
+5. **Verify purchase** - Check "My Items" → "Purchased" tab to see your purchase
+
+### Testing User Flows
+
+1. **Seller Flow:**
+
+   - Login as `testuser1` (password: `pass1`)
+   - Add new items for sale
+   - View items in "My Items" → "On Sale"
+   - Edit item prices
+
+2. **Buyer Flow:**
+
+   - Login as `testuser4` (password: `pass4`)
+   - Browse items and add to cart
+   - Complete checkout with test card
+   - View purchases in "My Items" → "Purchased"
+
+3. **Real-time Cart Updates:**
+   - Add items to cart and watch the cart count update immediately
+   - No page refresh needed
 
 ## Total Points: 42/42 (100%)
 

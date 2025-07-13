@@ -1,5 +1,5 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LiaHeart,
   LiaSearchSolid,
@@ -7,58 +7,55 @@ import {
   LiaSignOutAltSolid,
   LiaUserAltSolid,
 } from "react-icons/lia";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "../hooks/useCart";
 import Cart from "./Cart";
+import CurrencySelector from "./CurrencySelector";
+import LanguageSelector from "./LanguageSelector";
+import styles from "./Navbar.module.scss";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
+  const { cartItems, cartCount, fetchCartItems } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [showCart, setShowCart] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
-  const [cartCount, setCartCount] = useState(0);
 
-  // Fetch cart items when user is logged in
-  useEffect(() => {
-    if (user) {
-      fetchCartItems();
-    } else {
-      setCartItems([]);
-      setCartCount(0);
-    }
-  }, [user]);
-
-  const fetchCartItems = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8000/api/shop/cart/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setCartItems(response.data);
-      setCartCount(response.data.length);
-    } catch (error) {
-      console.error("Error fetching cart items:", error);
-      setCartItems([]);
-      setCartCount(0);
-    }
+  // Check if a link is active
+  const isActiveLink = (path) => {
+    if (path === "/" && location.pathname === "/") return true;
+    if (path !== "/" && location.pathname.startsWith(path)) return true;
+    return false;
   };
 
   const handleCartClick = (e) => {
     e.preventDefault();
+    e.stopPropagation();
+
+    console.log("Cart button clicked!", {
+      user: !!user,
+      userDetails: user,
+      cartItems: cartItems.length,
+      cartCount,
+      showCart,
+      token: !!localStorage.getItem("token"),
+    });
+
     if (!user) {
       Swal.fire({
-        title: "Login Required",
-        text: "Please login to view your cart",
+        title: t("common.loginRequired"),
+        text: t("common.pleaseLoginToViewCart"),
         icon: "info",
         showCancelButton: true,
         confirmButtonColor: "#000",
         cancelButtonColor: "#666",
-        confirmButtonText: "Login",
-        cancelButtonText: "Cancel",
+        confirmButtonText: t("navigation.login"),
+        cancelButtonText: t("userActions.cancel"),
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
@@ -66,7 +63,13 @@ const Navbar = () => {
       });
       return;
     }
-    setShowCart(true);
+
+    console.log("User is logged in, fetching fresh cart data...");
+    // Force refresh cart data before showing
+    fetchCartItems().then(() => {
+      console.log("Cart data refreshed, showing cart modal");
+      setShowCart(true);
+    });
   };
 
   const handleCloseCart = () => {
@@ -85,7 +88,7 @@ const Navbar = () => {
       showCancelButton: true,
       confirmButtonColor: "#000",
       cancelButtonColor: "#666",
-      confirmButtonText: "Yes, logout!",
+      confirmButtonText: t("navigation.logout"),
     }).then((result) => {
       if (result.isConfirmed) {
         logout();
@@ -102,60 +105,93 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={styles.navbar}>
       {/* Top Header Bar */}
-      <div className="navbar__top-bar">
-        <div className="navbar__container">
-          <div className="navbar__top-bar-content">
-            <div className="navbar__top-bar-left">
-              <span>Free shipping over $120</span>
-              <span className="navbar__divider">|</span>
-              <span>Support 24/7</span>
+      <div className={styles.topBar}>
+        <div className={styles.container}>
+          <div className={styles.topBarContent}>
+            <div className={styles.topBarLeft}>
+              <span>{t("features.freeShippingDesc")}</span>
+              <span className={styles.divider}>|</span>
+              <span>{t("features.premiumSupport")}</span>
             </div>
-            <div className="navbar__top-bar-right">
-              <span>USD $</span>
-              <span className="navbar__divider">|</span>
-              <span>English</span>
+            <div className={styles.topBarRight}>
+              <CurrencySelector compact={true} />
+              <span className={styles.divider}>|</span>
+              <LanguageSelector />
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Navigation */}
-      <div className="navbar__main">
-        <div className="navbar__container">
-          <div className="navbar__content">
-            <Link to="/" className="navbar__logo">
-              <span className="logo-text">OSTAEASY</span>
+      <div className={styles.main}>
+        <div className={styles.container}>
+          <div className={styles.content}>
+            <Link to="/" className={styles.logo}>
+              <span className={styles.logoText}>OSTAEASY</span>
             </Link>
 
-            <div className="navbar__nav">
-              <Link to="/" className="navbar__nav-link">
-                Shop
+            <div className={styles.nav}>
+              <Link
+                to="/"
+                className={`${styles.navLink} ${
+                  isActiveLink("/") ? styles.active : ""
+                }`}
+              >
+                {t("navigation.shop")}
               </Link>
-              <Link to="/about" className="navbar__nav-link">
-                About
+              <Link
+                to="/about"
+                className={`${styles.navLink} ${
+                  isActiveLink("/about") ? styles.active : ""
+                }`}
+              >
+                {t("navigation.about")}
               </Link>
-              <Link to="/contact" className="navbar__nav-link">
-                Contact
+              <Link
+                to="/contact"
+                className={`${styles.navLink} ${
+                  isActiveLink("/contact") ? styles.active : ""
+                }`}
+              >
+                {t("navigation.contact")}
               </Link>
               {user && (
                 <>
-                  <Link to="/myitems" className="navbar__nav-link">
-                    My Items
+                  <Link
+                    to="/dashboard"
+                    className={`${styles.navLink} ${
+                      isActiveLink("/dashboard") ? styles.active : ""
+                    }`}
+                  >
+                    Dashboard
                   </Link>
-                  <Link to="/purchases" className="navbar__nav-link">
-                    Orders
+                  <Link
+                    to="/myitems"
+                    className={`${styles.navLink} ${
+                      isActiveLink("/myitems") ? styles.active : ""
+                    }`}
+                  >
+                    {t("userActions.myItems")}
+                  </Link>
+                  <Link
+                    to="/purchases"
+                    className={`${styles.navLink} ${
+                      isActiveLink("/purchases") ? styles.active : ""
+                    }`}
+                  >
+                    {t("userActions.orders")}
                   </Link>
                 </>
               )}
             </div>
 
-            <div className="navbar__actions">
-              <form onSubmit={handleSearch} className="navbar__search">
+            <div className={styles.actions}>
+              <form onSubmit={handleSearch} className={styles.search}>
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder={t("userActions.searchProducts")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -165,44 +201,53 @@ const Navbar = () => {
               </form>
 
               {user ? (
-                <div className="navbar__user-menu">
-                  <Link to="/account" className="navbar__action-btn">
+                <div className={styles.userMenu}>
+                  <Link
+                    to="/account"
+                    className={`${styles.actionBtn} ${
+                      isActiveLink("/account") ? styles.activeAction : ""
+                    }`}
+                  >
                     <LiaUserAltSolid size={20} />
                   </Link>
 
-                  <button className="navbar__action-btn">
+                  <button className={styles.actionBtn}>
                     <LiaHeart size={20} />
                   </button>
 
                   <button
                     onClick={handleCartClick}
-                    className="navbar__action-btn navbar__action-btn--cart"
+                    className={styles.cartBtn}
                     data-count={cartCount}
                   >
                     <LiaShoppingBagSolid size={20} />
                   </button>
 
-                  <button onClick={handleLogout} className="navbar__action-btn">
+                  <button onClick={handleLogout} className={styles.actionBtn}>
                     <LiaSignOutAltSolid size={20} />
                   </button>
+
+                  <ThemeToggle />
                 </div>
               ) : (
-                <div className="navbar__guest-menu">
-                  <Link to="/login" className="navbar__action-btn">
+                <div className={styles.guestMenu}>
+                  <Link to="/login" className={styles.actionBtn}>
                     <LiaUserAltSolid size={20} />
                   </Link>
 
-                  <button className="navbar__action-btn">
+                  <button className={styles.actionBtn}>
                     <LiaHeart size={20} />
                   </button>
 
                   <button
                     onClick={handleCartClick}
-                    className="navbar__action-btn navbar__action-btn--cart"
+                    className={styles.cartBtn}
                     data-count={cartCount}
                   >
                     <LiaShoppingBagSolid size={20} />
                   </button>
+
+                  <ThemeToggle />
                 </div>
               )}
             </div>

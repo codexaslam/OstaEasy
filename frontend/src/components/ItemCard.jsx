@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LiaEyeSolid,
   LiaHeart,
@@ -7,7 +8,8 @@ import {
 } from "react-icons/lia";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import "../styles/components/_item-card.scss";
+import styles from "./ItemCard.module.scss";
+import PriceDisplay from "./PriceDisplay";
 
 const ItemCard = ({
   item,
@@ -19,11 +21,8 @@ const ItemCard = ({
 }) => {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { t } = useTranslation();
   const navigate = useNavigate();
-
-  const formatPrice = (price) => {
-    return `$${parseFloat(price).toFixed(2)}`;
-  };
 
   const handleImageError = () => {
     setImageError(true);
@@ -39,14 +38,14 @@ const ItemCard = ({
     if (!currentUser) {
       // Show login prompt for non-authenticated users
       const result = await Swal.fire({
-        title: "Login Required",
-        text: "Please login to add items to your cart",
+        title: t("common.loginRequired"),
+        text: t("common.pleaseLoginToAddItems"),
         icon: "info",
         showCancelButton: true,
         confirmButtonColor: "#000",
         cancelButtonColor: "#666",
-        confirmButtonText: "Login",
-        cancelButtonText: "Cancel",
+        confirmButtonText: t("navigation.login"),
+        cancelButtonText: t("userActions.cancel"),
       });
 
       if (result.isConfirmed) {
@@ -57,10 +56,10 @@ const ItemCard = ({
 
     if (currentUser.id === item.seller.id) {
       Swal.fire({
-        title: "Cannot Add Own Item",
-        text: "You cannot add your own item to the cart",
+        title: t("itemCard.cannotAddOwnItem"),
+        text: t("itemCard.cannotAddOwnItemText"),
         icon: "warning",
-        confirmButtonText: "OK",
+        confirmButtonText: t("common.ok"),
       });
       return;
     }
@@ -68,8 +67,8 @@ const ItemCard = ({
     try {
       await onAddToCart(item.id);
       Swal.fire({
-        title: "Added to Cart!",
-        text: `${item.title} has been added to your cart.`,
+        title: t("itemCard.itemAddedToCart"),
+        text: `${item.title} ${t("itemCard.itemAddedToCartText")}`,
         icon: "success",
         timer: 1500,
         showConfirmButton: false,
@@ -78,10 +77,10 @@ const ItemCard = ({
       });
     } catch {
       Swal.fire({
-        title: "Error!",
-        text: "Failed to add item to cart. Please try again.",
+        title: t("common.error"),
+        text: t("itemCard.failedToAddToCart"),
         icon: "error",
-        confirmButtonText: "OK",
+        confirmButtonText: t("common.ok"),
       });
     }
   };
@@ -94,52 +93,52 @@ const ItemCard = ({
   const handleWishlist = (e) => {
     e.stopPropagation();
     Swal.fire({
-      title: "Wishlist Feature",
-      text: "Wishlist functionality coming soon!",
+      title: t("itemCard.wishlistFeature"),
+      text: t("itemCard.wishlistComingSoon"),
       icon: "info",
-      confirmButtonText: "OK",
+      confirmButtonText: t("common.ok"),
     });
   };
 
   return (
     <div
-      className="item-card"
+      className={styles.itemCard}
       onClick={handleCardClick}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="item-card__image-container">
+      <div className={styles.imageContainer}>
         {item.image_url && !imageError ? (
           <img
             src={item.image_url}
             alt={item.title}
-            className="item-card__image"
+            className={styles.image}
             onError={handleImageError}
             loading="lazy"
           />
         ) : (
-          <div className="item-card__image-placeholder">
+          <div className={styles.imagePlaceholder}>
             <LiaImageSolid size={48} />
           </div>
         )}
 
         {/* Hover Actions */}
         <div
-          className={`item-card__actions-overlay ${
-            isHovered ? "item-card__actions-overlay--visible" : ""
+          className={`${styles.actionsOverlay} ${
+            isHovered ? styles.visible : ""
           }`}
         >
           <button
             onClick={handleQuickView}
-            className="item-card__action-btn"
+            className={styles.actionBtn}
             title="Quick View"
           >
             <LiaEyeSolid size={16} />
           </button>
           <button
             onClick={handleWishlist}
-            className="item-card__action-btn"
-            title="Add to Wishlist"
+            className={styles.actionBtn}
+            title={t("itemCard.addToWishlist")}
           >
             <LiaHeart size={16} />
           </button>
@@ -147,56 +146,67 @@ const ItemCard = ({
 
         {/* Sale Badge */}
         {item.is_sale && (
-          <div className="item-card__badge item-card__badge--sale">Sale</div>
+          <div className={`${styles.badge} ${styles.sale}`}>
+            {t("itemCard.onSale")}
+          </div>
         )}
 
         {/* New Badge */}
         {item.is_new && (
-          <div className="item-card__badge item-card__badge--new">New</div>
+          <div className={`${styles.badge} ${styles.new}`}>
+            {t("hero.newArrivals")}
+          </div>
         )}
       </div>
 
-      <div className="item-card__content">
-        <div className="item-card__info">
-          <h3 className="item-card__title">{item.title}</h3>
+      <div className={styles.content}>
+        <div className={styles.info}>
+          <h3 className={styles.title}>{item.title}</h3>
           {showDescription && item.description && (
-            <p className="item-card__description">
+            <p className={styles.description}>
               {item.description.length > 150
                 ? `${item.description.substring(0, 150)}...`
                 : item.description}
             </p>
           )}
-          <div className="item-card__price-container">
-            <span className="item-card__price">{formatPrice(item.price)}</span>
+          <div className={styles.priceContainer}>
+            <PriceDisplay
+              price={item.price}
+              size="medium"
+              className={`${styles.price} price-display--item-card`}
+            />
             {item.original_price && item.original_price !== item.price && (
-              <span className="item-card__original-price">
-                {formatPrice(item.original_price)}
-              </span>
+              <PriceDisplay
+                price={item.original_price}
+                size="small"
+                showSecondary={false}
+                className={styles.originalPrice}
+              />
             )}
           </div>
-          <div className="item-card__meta">
-            <span className="item-card__seller">by {item.seller.username}</span>
+          <div className={styles.meta}>
+            <span className={styles.seller}>by {item.seller.username}</span>
           </div>
         </div>
 
-        <div className="item-card__actions">
+        <div className={styles.actions}>
           {isMyItem ? (
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 if (onEditPrice) onEditPrice(item);
               }}
-              className="item-card__edit-btn"
+              className={styles.editBtn}
             >
-              Edit Price
+              {t("itemCard.editPrice")}
             </button>
           ) : (
             <button
               onClick={handleAddToCartClick}
-              className="item-card__add-to-cart-btn"
+              className={styles.addToCartBtn}
             >
               <LiaShoppingBagSolid size={16} />
-              Add to Cart
+              {t("itemCard.addToCart")}
             </button>
           )}
         </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { LiaCogSolid, LiaLockSolid, LiaUserSolid } from "react-icons/lia";
+import CurrencySelector from "../components/CurrencySelector";
 import { useAuth } from "../contexts/AuthContext";
-import "./Auth.css";
 
 const Account = () => {
   const { user, changePassword } = useAuth();
@@ -64,32 +65,79 @@ const Account = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Account Information</h2>
-
-        <div className="user-info">
-          <div className="info-item">
-            <strong>Username:</strong> {user.username}
-          </div>
-          <div className="info-item">
-            <strong>Email:</strong> {user.email}
-          </div>
-          {user.phone_number && (
-            <div className="info-item">
-              <strong>Phone:</strong> {user.phone_number}
-            </div>
-          )}
-          {user.address && (
-            <div className="info-item">
-              <strong>Address:</strong> {user.address}
-            </div>
-          )}
+        <div className="auth-header">
+          <h2 className="auth-title">Account Settings</h2>
+          <p className="auth-subtitle">
+            Manage your account information and preferences
+          </p>
         </div>
 
-        <div className="password-section">
-          <h3>Change Password</h3>
-          <form onSubmit={handlePasswordSubmit}>
+        {/* User Information Section */}
+        <div className="account-section">
+          <h3 className="section-title">
+            <LiaUserSolid className="section-icon" />
+            Personal Information
+          </h3>
+          <div className="user-info-grid">
+            <div className="info-card">
+              <span className="info-label">Username</span>
+              <span className="info-value">{user.username}</span>
+            </div>
+            <div className="info-card">
+              <span className="info-label">Email</span>
+              <span className="info-value">{user.email}</span>
+            </div>
+            {user.phone_number && (
+              <div className="info-card">
+                <span className="info-label">Phone</span>
+                <span className="info-value">{user.phone_number}</span>
+              </div>
+            )}
+            {user.address && (
+              <div className="info-card">
+                <span className="info-label">Address</span>
+                <span className="info-value">{user.address}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Currency Settings Section */}
+        <div className="account-section">
+          <h3 className="section-title">
+            <LiaCogSolid className="section-icon" />
+            Preferences
+          </h3>
+          <CurrencySelector />
+        </div>
+
+        {/* Password Change Section */}
+        <div className="account-section">
+          <h3 className="section-title">
+            <LiaLockSolid className="section-icon" />
+            Security
+          </h3>
+          <p className="section-subtitle">
+            Update your password to keep your account secure
+          </p>
+
+          <form onSubmit={handlePasswordSubmit} className="auth-form">
+            {error && (
+              <div className="auth-error">
+                <span>{error}</span>
+              </div>
+            )}
+
+            {message && (
+              <div className="auth-success">
+                <span>{message}</span>
+              </div>
+            )}
+
             <div className="form-group">
-              <label htmlFor="old_password">Current Password</label>
+              <label htmlFor="old_password" className="form-label">
+                Current Password
+              </label>
               <input
                 type="password"
                 id="old_password"
@@ -97,41 +145,58 @@ const Account = () => {
                 value={passwordForm.old_password}
                 onChange={handlePasswordChange}
                 required
-                placeholder="Enter current password"
+                placeholder="Enter your current password"
+                className="form-input"
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="new_password">New Password</label>
-              <input
-                type="password"
-                id="new_password"
-                name="new_password"
-                value={passwordForm.new_password}
-                onChange={handlePasswordChange}
-                required
-                placeholder="Enter new password"
-              />
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="new_password" className="form-label">
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  id="new_password"
+                  name="new_password"
+                  value={passwordForm.new_password}
+                  onChange={handlePasswordChange}
+                  required
+                  placeholder="Enter new password"
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="confirm_password" className="form-label">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirm_password"
+                  name="confirm_password"
+                  value={passwordForm.confirm_password}
+                  onChange={handlePasswordChange}
+                  required
+                  placeholder="Confirm new password"
+                  className="form-input"
+                />
+              </div>
             </div>
 
-            <div className="form-group">
-              <label htmlFor="confirm_password">Confirm New Password</label>
-              <input
-                type="password"
-                id="confirm_password"
-                name="confirm_password"
-                value={passwordForm.confirm_password}
-                onChange={handlePasswordChange}
-                required
-                placeholder="Confirm new password"
-              />
-            </div>
-
-            {error && <div className="error-message">{error}</div>}
-            {message && <div className="success-message">{message}</div>}
-
-            <button type="submit" disabled={loading} className="submit-btn">
-              {loading ? "Changing Password..." : "Change Password"}
+            <button
+              type="submit"
+              disabled={loading}
+              className="auth-button auth-button--password"
+            >
+              {loading ? (
+                <>
+                  <span className="loading-spinner">⏳</span>
+                  Updating Password...
+                </>
+              ) : (
+                "Update Password"
+              )}
             </button>
           </form>
         </div>

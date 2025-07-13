@@ -1,13 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+import PriceDisplay from "../components/PriceDisplay";
+import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
-import "./ItemDetails.css";
+import { useCart } from "../hooks/useCart";
 
 const ItemDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { addToCart } = useCart();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -16,9 +20,7 @@ const ItemDetails = () => {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/api/shop/items/${id}/`
-        );
+        const response = await axios.get(API_ENDPOINTS.ITEM_DETAIL(id));
         setItem(response.data);
       } catch (error) {
         console.error("Error fetching item:", error);
@@ -33,27 +35,51 @@ const ItemDetails = () => {
 
   const handleAddToCart = async () => {
     if (!user) {
-      alert("Please login to add items to cart");
-      navigate("/login");
+      Swal.fire({
+        title: "Login Required",
+        text: "Please login to add items to cart",
+        icon: "info",
+        confirmButtonText: "Login",
+        confirmButtonColor: "#000",
+        background: "#fff",
+        color: "#000",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/login");
+        }
+      });
       return;
     }
 
     setAddingToCart(true);
     try {
-      const token = localStorage.getItem("token");
-      await axios.post(
-        `http://localhost:8000/api/shop/cart/add/${item.id}/`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      alert("Item added to cart!");
+      await addToCart(item.id);
+      Swal.fire({
+        title: "Success!",
+        text: "Item added to cart successfully!",
+        icon: "success",
+        confirmButtonText: "Continue Shopping",
+        confirmButtonColor: "#000",
+        background: "#fff",
+        color: "#000",
+        showClass: {
+          popup: "animate__animated animate__fadeInUp animate__faster",
+        },
+        hideClass: {
+          popup: "animate__animated animate__fadeOutDown animate__faster",
+        },
+      });
     } catch (error) {
       console.error("Error adding to cart:", error);
-      alert(error.response?.data?.error || "Failed to add item to cart");
+      Swal.fire({
+        title: "Error!",
+        text: error.response?.data?.error || "Failed to add item to cart",
+        icon: "error",
+        confirmButtonText: "Try Again",
+        confirmButtonColor: "#000",
+        background: "#fff",
+        color: "#000",
+      });
     } finally {
       setAddingToCart(false);
     }
@@ -136,7 +162,12 @@ const ItemDetails = () => {
             <div className="item-header">
               <h1 className="item-title">{item.title}</h1>
               <div className="item-price-section">
-                <span className="item-price">${item.price}</span>
+                <PriceDisplay
+                  price={item.price}
+                  size="extra-large"
+                  className="item-price"
+                  vertical={true}
+                />
                 <span className={`item-status ${item.status}`}>
                   {item.status === "on_sale" ? "Available" : "Sold"}
                 </span>

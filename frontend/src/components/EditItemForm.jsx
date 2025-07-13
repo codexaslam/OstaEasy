@@ -8,6 +8,7 @@ import axios from "axios";
 import { AlertCircle, Edit3, Save, X } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import { API_ENDPOINTS } from "../config/api";
 
 const EditItemForm = ({ item, onItemUpdated, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -32,10 +33,7 @@ const EditItemForm = ({ item, onItemUpdated, onCancel }) => {
     setError("");
 
     try {
-      await axios.put(
-        `http://localhost:8000/api/shop/items/${item.id}/update/`,
-        formData
-      );
+      await axios.put(API_ENDPOINTS.ITEM_UPDATE(item.id), formData);
       onItemUpdated();
       Swal.fire({
         title: "Success!",

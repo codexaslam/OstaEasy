@@ -1,27 +1,33 @@
 import axios from "axios";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Swal from "sweetalert2";
-import "./Cart.css";
+import { API_ENDPOINTS } from "../config/api";
+import styles from "./Cart.module.scss";
+import PriceDisplay from "./PriceDisplay";
 import StripeCheckout from "./StripeCheckout";
 
 const Cart = ({ items, onUpdate, onClose }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [showStripeCheckout, setShowStripeCheckout] = useState(false);
+
+  // Debug logging
+  console.log("Cart component received items:", items);
+  console.log("Items type:", typeof items);
+  console.log("Is array?", Array.isArray(items));
 
   const handleRemoveItem = async (itemId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(
-        `http://localhost:8000/api/shop/cart/remove/${itemId}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await axios.delete(API_ENDPOINTS.CART_REMOVE(itemId), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       onUpdate();
       Swal.fire({
-        title: "Item Removed",
+        title: t("cart.itemRemoved"),
         text: "Item has been removed from your cart.",
         icon: "success",
         timer: 1500,
@@ -32,24 +38,42 @@ const Cart = ({ items, onUpdate, onClose }) => {
     } catch (error) {
       console.error("Failed to remove item from cart:", error);
       Swal.fire({
+        title: t("common.error"),
+        text: t("cart.failedToRemove"),
+        icon: "error",
+        confirmButtonText: t("common.ok"),
+      });
+    }
+  };
+
+  const handlePayClick = async () => {
+    try {
+      setLoading(true);
+      setShowStripeCheckout(true);
+    } catch (error) {
+      console.error("Error initiating checkout:", error);
+      setLoading(false);
+      Swal.fire({
         title: "Error!",
-        text: "Failed to remove item from cart. Please try again.",
+        text: "Failed to start checkout process. Please try again.",
         icon: "error",
         confirmButtonText: "OK",
       });
     }
   };
 
-  const handlePayClick = async () => {
-    setShowStripeCheckout(true);
-  };
-
   const handleStripeSuccess = async (paymentIntent) => {
     try {
       const token = localStorage.getItem("token");
+
+      // Handle mock payment (no paymentIntent provided) or real payment
+      const paymentIntentId = paymentIntent?.id || "mock_payment_intent_id";
+
+      console.log("Processing payment with ID:", paymentIntentId);
+
       await axios.post(
-        "http://localhost:8000/api/shop/cart/pay/",
-        { payment_intent_id: paymentIntent.id },
+        API_ENDPOINTS.CART_PAY,
+        { payment_intent_id: paymentIntentId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -76,77 +100,96 @@ const Cart = ({ items, onUpdate, onClose }) => {
       });
     } finally {
       setShowStripeCheckout(false);
+      setLoading(false);
     }
   };
 
   const handleStripeCancel = () => {
     setShowStripeCheckout(false);
+    setLoading(false);
   };
 
-  const totalAmount = items.reduce(
-    (sum, cartItem) => sum + parseFloat(cartItem.item.price),
-    0
-  );
+  // Ensure items is always an array
+  const safeItems = Array.isArray(items) ? items : [];
+
+  const totalAmount = safeItems.reduce((sum, cartItem) => {
+    const price = parseFloat(cartItem.item?.price || 0);
+    return sum + (isNaN(price) ? 0 : price);
+  }, 0);
 
   return (
     <>
-      <div className="cart-overlay">
-        <div className="cart-modal">
-          <div className="cart-header">
-            <h2>Shopping Cart</h2>
-            <button onClick={onClose} className="close-btn">
+      <div className={styles.cartOverlay}>
+        <div className={styles.cartModal}>
+          <div className={styles.header}>
+            <h2>{t("cart.shoppingCart")}</h2>
+            <button onClick={onClose} className={styles.closeBtn}>
               ×
             </button>
           </div>
 
-          <div className="cart-content">
-            {items.length === 0 ? (
-              <div className="empty-cart">
-                <p>Your cart is empty</p>
+          <div className={styles.content}>
+            {safeItems.length === 0 ? (
+              <div className={styles.emptyMessage}>
+                <p>{t("cart.emptyCart")}</p>
               </div>
             ) : (
               <>
-                <div className="cart-items">
-                  {items.map((cartItem) => (
-                    <div key={cartItem.id} className="cart-item">
+                <div className={styles.itemsList}>
+                  {safeItems.map((cartItem) => (
+                    <div key={cartItem.id} className={styles.cartItem}>
                       {cartItem.item.image_url && (
-                        <div className="cart-item-image">
+                        <div className={styles.itemImagePlaceholder}>
                           <img
                             src={cartItem.item.image_url}
                             alt={cartItem.item.title}
+                            className={styles.itemImage}
                             onError={(e) => {
                               e.target.style.display = "none";
                             }}
                           />
                         </div>
                       )}
-                      <div className="item-info">
-                        <h4>{cartItem.item.title}</h4>
-                        <p className="item-seller">
+                      <div className={styles.itemInfo}>
+                        <h4 className={styles.itemTitle}>
+                          {cartItem.item.title}
+                        </h4>
+                        <p className={styles.itemSeller}>
                           Seller: {cartItem.item.seller.username}
                         </p>
-                        <p className="item-price">${cartItem.item.price}</p>
+                        <PriceDisplay
+                          price={cartItem.item.price}
+                          size="medium"
+                          className="price-display--cart"
+                        />
                       </div>
                       <button
                         onClick={() => handleRemoveItem(cartItem.item.id)}
-                        className="remove-btn"
+                        className={styles.removeBtn}
                       >
-                        Remove
+                        {t("cart.remove")}
                       </button>
                     </div>
                   ))}
                 </div>
 
-                <div className="cart-summary">
-                  <div className="total-amount">
-                    <strong>Total: ${totalAmount.toFixed(2)}</strong>
+                <div className={styles.footer}>
+                  <div className={styles.total}>
+                    <span>{t("cart.total")}: </span>
+                    <PriceDisplay
+                      price={totalAmount}
+                      size="large"
+                      className="price-display--cart"
+                    />
                   </div>
                   <button
                     onClick={handlePayClick}
-                    disabled={loading || items.length === 0}
-                    className="pay-btn"
+                    disabled={loading || safeItems.length === 0}
+                    className={styles.payBtn}
                   >
-                    {loading ? "Processing..." : "Secure Checkout"}
+                    {loading
+                      ? t("checkout.processing")
+                      : t("cart.proceedToCheckout")}
                   </button>
                 </div>
               </>

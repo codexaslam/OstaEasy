@@ -1,7 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import PriceDisplay from "../components/PriceDisplay";
+import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
-import "./PurchaseHistory.css";
 
 const PurchaseHistory = () => {
   const { user } = useAuth();
@@ -18,14 +19,11 @@ const PurchaseHistory = () => {
   const fetchPurchases = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:8000/api/shop/purchases/",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(API_ENDPOINTS.PURCHASES, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setPurchases(response.data.results || response.data);
     } catch (error) {
       console.error("Error fetching purchases:", error);
@@ -83,9 +81,12 @@ const PurchaseHistory = () => {
             <div key={purchase.id} className="purchase-card">
               <div className="purchase-header">
                 <h3>{purchase.item.title}</h3>
-                <span className="purchase-price">
-                  ${purchase.purchase_price}
-                </span>
+                <PriceDisplay
+                  price={purchase.purchase_price}
+                  size="large"
+                  className="purchase-price"
+                  vertical={true}
+                />
               </div>
 
               {purchase.item.image_url && (

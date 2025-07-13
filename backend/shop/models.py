@@ -20,7 +20,7 @@ class Item(models.Model):
     
     title = models.CharField(max_length=200)
     description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price in EUR (Euro)")
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='clothing')
     image_url = models.URLField(max_length=500, null=True, blank=True, help_text="URL of item image")
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='items_for_sale')

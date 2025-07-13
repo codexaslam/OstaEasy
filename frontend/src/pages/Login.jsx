@@ -1,20 +1,10 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft, Eye, EyeOff, LogIn } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -43,120 +33,87 @@ const Login = () => {
       if (result.success) {
         navigate("/");
       } else {
-        setError(
-          result.error || "Login failed. Please check your credentials."
-        );
+        setError(result.error || t("auth.loginFailed"));
       }
     } catch (err) {
-      setError(err.message || "Login failed. Please check your credentials.");
+      setError(err.message || t("auth.loginFailed"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          className="mb-6 text-gray-600 hover:text-gray-900"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="auth-header">
+          <h1 className="auth-title">{t("auth.welcomeBack")}</h1>
+          <p className="auth-subtitle">{t("auth.signInToAccount")}</p>
+        </div>
 
-        <Card className="shadow-lg border-0">
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-            <CardDescription>
-              Sign in to your account to continue shopping
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+        {error && (
+          <div className="auth-error">
+            <span>{error}</span>
+          </div>
+        )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  name="username"
-                  type="text"
-                  placeholder="Enter your username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  required
-                  className="w-full"
-                />
-              </div>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="username" className="form-label">
+              {t("auth.username")}
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              placeholder={t("auth.enterUsername")}
+              value={formData.username}
+              onChange={handleChange}
+              required
+              className="form-input"
+            />
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    className="w-full pr-10"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700"
-                disabled={loading}
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">
+              {t("auth.password")}
+            </label>
+            <div className="password-input-container">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder={t("auth.enterPassword")}
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="form-input"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
               >
-                {loading ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Signing in...
-                  </div>
-                ) : (
-                  <div className="flex items-center">
-                    <LogIn className="h-4 w-4 mr-2" />
-                    Sign In
-                  </div>
-                )}
-              </Button>
-            </form>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Don't have an account?{" "}
-                <Link
-                  to="/signup"
-                  className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
-                >
-                  Sign up here
-                </Link>
-              </p>
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+
+          <button type="submit" className="auth-button" disabled={loading}>
+            {loading ? t("common.loading") : t("auth.signIn")}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            {t("auth.dontHaveAccount")}{" "}
+            <Link to="/signup" className="auth-link">
+              {t("navigation.signup")}
+            </Link>
+          </p>
+          <Link to="/" className="back-home-link">
+            ← {t("navigation.home")}
+          </Link>
+        </div>
       </div>
     </div>
   );

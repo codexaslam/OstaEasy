@@ -2,6 +2,7 @@
 # Create your views here.
 from django.http import HttpResponse
 from django.contrib.auth import authenticate
+from django.utils.translation import gettext as _
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -19,7 +20,10 @@ class UserSignupView(APIView):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({
+                'message': _('User created successfully'),
+                'user': serializer.data
+            }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UserProfileView(APIView):
@@ -33,7 +37,10 @@ class UserProfileView(APIView):
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response({
+                'message': _('Profile updated successfully'),
+                'user': serializer.data
+            })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -46,18 +53,18 @@ class ChangePasswordView(APIView):
         
         if not old_password or not new_password:
             return Response({
-                'error': 'Both old and new passwords are required'
+                'error': _('Both old and new passwords are required')
             }, status=status.HTTP_400_BAD_REQUEST)
         
         user = request.user
         if not user.check_password(old_password):
             return Response({
-                'error': 'Old password is incorrect'
+                'error': _('Old password is incorrect')
             }, status=status.HTTP_400_BAD_REQUEST)
         
         user.set_password(new_password)
         user.save()
         
         return Response({
-            'message': 'Password changed successfully'
+            'message': _('Password changed successfully')
         })

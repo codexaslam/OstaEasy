@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   LiaCheckDoubleSolid,
   LiaHeadsetSolid,
@@ -11,44 +12,45 @@ import Swal from "sweetalert2";
 import AddItemForm from "../components/AddItemForm";
 import Cart from "../components/Cart";
 import ItemCard from "../components/ItemCard";
+import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
-import "./Home.css";
+import { useCart } from "../hooks/useCart";
+// import styles from "./Home.module.scss"; // TODO: Convert Home component to use CSS modules
 
 const Home = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
+  const { addToCart, cartItems, fetchCartItems } = useCart();
   const [searchParams] = useSearchParams();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showCart, setShowCart] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
   const heroSlides = [
     {
-      title: "Spring Clearance Event",
-      subtitle: "Save Up to 70%",
-      description:
-        "Discover the latest trends and timeless pieces from our curated collection",
-      buttonText: "Shop Now",
+      title: t("hero.springEvent"),
+      subtitle: t("hero.saveUp"),
+      description: t("hero.discover"),
+      buttonText: t("hero.shopNow"),
       image:
         "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     },
     {
-      title: "Summer Sale",
-      subtitle: "Discount off 70%",
-      description:
-        "Time to refresh your wardrobe with our exclusive collection",
-      buttonText: "Explore Collection",
+      title: t("hero.summerSale"),
+      subtitle: t("hero.discountOff"),
+      description: t("hero.refreshWardrobe"),
+      buttonText: t("hero.exploreCollection"),
       image:
         "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     },
     {
-      title: "New Arrivals",
-      subtitle: "Fresh Styles",
-      description: "Shop the latest styles and stay ahead of the curve",
-      buttonText: "View New",
+      title: t("hero.newArrivals"),
+      subtitle: t("hero.freshStyles"),
+      description: t("hero.shopLatest"),
+      buttonText: t("hero.viewNew"),
       image:
         "https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     },
@@ -56,31 +58,31 @@ const Home = () => {
 
   const categories = [
     {
-      name: "Clothing",
+      name: t("categories.clothing"),
       image:
         "https://images.unsplash.com/photo-1445205170230-053b83016050?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80",
       link: "/category/clothing",
     },
     {
-      name: "Accessories",
+      name: t("categories.accessories"),
       image:
         "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
       link: "/category/accessories",
     },
     {
-      name: "Bags",
+      name: t("categories.bags"),
       image:
         "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2127&q=80",
       link: "/category/bags",
     },
     {
-      name: "Shoes",
+      name: t("categories.shoes"),
       image:
         "https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2012&q=80",
       link: "/category/shoes",
     },
     {
-      name: "Sunglasses",
+      name: t("categories.sunglasses"),
       image:
         "https://images.unsplash.com/photo-1511499767150-a48a237f0083?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2080&q=80",
       link: "/category/sunglasses",
@@ -89,51 +91,45 @@ const Home = () => {
 
   const testimonials = [
     {
-      title: "Best Online Fashion Site",
-      content:
-        "I always find something stylish and affordable on this web fashion site. The quality is amazing and delivery is super fast!",
+      title: t("testimonials.bestOnlineFashionSite"),
+      content: t("testimonials.bestOnlineReview"),
       author: "Robert Smith",
-      location: "Customer from USA",
+      location: t("testimonials.customerFromUSA"),
       rating: 5,
     },
     {
-      title: "Great Selection and Quality",
-      content:
-        "I love the variety of styles and the high-quality clothing on this web fashion site. Every purchase has exceeded my expectations.",
+      title: t("testimonials.greatSelection"),
+      content: t("testimonials.greatSelectionReview"),
       author: "Allen Lyn",
-      location: "Customer from France",
+      location: t("testimonials.customerFromFrance"),
       rating: 5,
     },
     {
-      title: "Best Customer Service",
-      content:
-        "I finally found a web fashion site with stylish and flattering options in my size. The customer support team is incredibly helpful and responsive.",
+      title: t("testimonials.bestCustomerService"),
+      content: t("testimonials.bestCustomerServiceReview"),
       author: "Peter Rope",
-      location: "Customer from USA",
+      location: t("testimonials.customerFromUSA"),
       rating: 5,
     },
     {
-      title: "Amazing Shopping Experience",
-      content:
-        "The quality is outstanding and the customer service is exceptional. I've recommended this site to all my friends and family.",
+      title: t("testimonials.amazingShoppingExperience"),
+      content: t("testimonials.amazingShoppingReview"),
       author: "Hellen Ase",
-      location: "Customer from Japan",
+      location: t("testimonials.customerFromJapan"),
       rating: 5,
     },
     {
-      title: "Perfect Fit Every Time",
-      content:
-        "The size guide is accurate and the clothes fit perfectly. I love how easy it is to find exactly what I'm looking for.",
+      title: t("testimonials.perfectFitEveryTime"),
+      content: t("testimonials.perfectFitReview"),
       author: "Maria Garcia",
-      location: "Customer from Spain",
+      location: t("testimonials.customerFromSpain"),
       rating: 5,
     },
     {
-      title: "Trendy and Affordable",
-      content:
-        "This site always has the latest trends at prices that won't break the bank. My wardrobe has never looked better!",
+      title: t("testimonials.trendyAndAffordable"),
+      content: t("testimonials.trendyAndAffordableReview"),
       author: "Emma Johnson",
-      location: "Customer from UK",
+      location: t("testimonials.customerFromUK"),
       rating: 5,
     },
   ];
@@ -141,9 +137,6 @@ const Home = () => {
   useEffect(() => {
     const searchQuery = searchParams.get("search");
     fetchItems(searchQuery);
-    if (user) {
-      fetchCartItems();
-    }
   }, [user, searchParams]);
 
   useEffect(() => {
@@ -164,9 +157,7 @@ const Home = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:8000/api/shop/items/${
-          search ? `?search=${search}` : ""
-        }`
+        `${API_ENDPOINTS.ITEMS}${search ? `?search=${search}` : ""}`
       );
       setItems(response.data.results || response.data);
     } catch (error) {
@@ -182,20 +173,6 @@ const Home = () => {
     }
   };
 
-  const fetchCartItems = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.get("http://localhost:8000/api/shop/cart/", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setCartItems(response.data.results || response.data);
-    } catch (error) {
-      console.error("Error fetching cart items:", error);
-    }
-  };
-
   const handleAddToCart = async (itemId) => {
     if (!user) {
       Swal.fire({
@@ -205,6 +182,10 @@ const Home = () => {
         showCancelButton: true,
         confirmButtonText: "Login",
         cancelButtonText: "Cancel",
+        confirmButtonColor: "#000",
+        cancelButtonColor: "#666",
+        background: "#fff",
+        color: "#000",
       }).then((result) => {
         if (result.isConfirmed) {
           window.location.href = "/login";
@@ -214,19 +195,29 @@ const Home = () => {
     }
 
     try {
-      const token = localStorage.getItem("token");
-      await axios.post(
-        `http://localhost:8000/api/shop/cart/add/${itemId}/`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      fetchCartItems();
+      await addToCart(itemId);
+      Swal.fire({
+        title: "Success!",
+        text: "Item added to cart successfully!",
+        icon: "success",
+        confirmButtonText: "Continue Shopping",
+        confirmButtonColor: "#000",
+        background: "#fff",
+        color: "#000",
+        timer: 2000,
+        showConfirmButton: false,
+      });
       return Promise.resolve();
     } catch (error) {
+      Swal.fire({
+        title: "Error!",
+        text: error.response?.data?.error || "Failed to add item to cart",
+        icon: "error",
+        confirmButtonText: "Try Again",
+        confirmButtonColor: "#000",
+        background: "#fff",
+        color: "#000",
+      });
       return Promise.reject(error);
     }
   };
@@ -605,23 +596,6 @@ const Home = () => {
               <div className="search-results-header">
                 <h2>Search Results</h2>
                 <p>Search results for: "{searchParams.get("search")}"</p>
-              </div>
-            )}
-
-            {user && (
-              <div className="user-actions">
-                <button
-                  onClick={() => setShowAddForm(!showAddForm)}
-                  className="action-button primary"
-                >
-                  {showAddForm ? "Cancel" : "Add New Item"}
-                </button>
-                <button
-                  onClick={() => setShowCart(!showCart)}
-                  className="action-button secondary"
-                >
-                  View Cart ({cartItems.length})
-                </button>
               </div>
             )}
 

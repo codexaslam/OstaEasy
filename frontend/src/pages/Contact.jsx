@@ -1,33 +1,48 @@
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   ArrowRight,
+  Award,
+  Building2,
+  CheckCircle,
   Clock,
+  Coffee,
+  Globe,
+  Headphones,
+  Heart,
   Mail,
   MapPin,
   MessageCircle,
+  MessageSquare,
   Phone,
   Send,
+  Shield,
   Sparkles,
   Star,
+  Timer,
+  Users,
+  Zap,
 } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
+import "./Contact.scss";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
+    phone: "",
     subject: "",
     message: "",
   });
@@ -41,90 +56,166 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Simulate form submission
+
     Swal.fire({
-      title: "Message Sent!",
-      text: "Thank you for contacting us. We'll get back to you within 24 hours.",
+      title: "Message Sent Successfully!",
+      text: "Thank you for reaching out. Our team will get back to you within 24 hours.",
       icon: "success",
-      confirmButtonText: "OK",
-      confirmButtonColor: "#0ea5e9",
+      confirmButtonText: "Perfect!",
+      confirmButtonColor: "#2563eb",
+      background: "#ffffff",
+      customClass: {
+        popup: "contact-success-popup",
+      },
     });
+
     setFormData({
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
+      phone: "",
       subject: "",
       message: "",
     });
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative py-20 px-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="max-w-4xl mx-auto text-center">
-          <Badge
-            variant="outline"
-            className="mb-6 bg-white/50 border-blue-200 backdrop-blur-sm"
-          >
-            <Sparkles className="h-4 w-4 mr-2 text-blue-600" />
-            Get In Touch
-          </Badge>
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Contact Us
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-            Have a question, suggestion, or just want to say hello? We're here
-            to help and would love to connect with you.
-          </p>
+    <div className="contact-page">
+      {/* Hero Section - Redesigned */}
+      <section className="hero-section">
+        <div className="hero-overlay"></div>
+        <div className="hero-container">
+          <div className="hero-content">
+            <div className="hero-text">
+              <Badge className="hero-badge" variant="secondary">
+                <MessageCircle className="badge-icon" />
+                Connect With Us
+              </Badge>
+
+              <h1 className="hero-title">
+                Let's Create Something
+                <span className="title-gradient"> Extraordinary </span>
+                Together
+              </h1>
+
+              <p className="hero-description">
+                Whether you have a question, feedback, or want to collaborate,
+                we're here to help. Reach out and let's start a conversation
+                that could transform your ideas into reality.
+              </p>
+
+              <div className="hero-features">
+                <div className="feature-item">
+                  <div className="feature-icon">
+                    <Timer />
+                  </div>
+                  <div className="feature-text">
+                    <h4>Quick Response</h4>
+                    <p>24hr response time</p>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <div className="feature-icon">
+                    <Headphones />
+                  </div>
+                  <div className="feature-text">
+                    <h4>Expert Support</h4>
+                    <p>Dedicated specialists</p>
+                  </div>
+                </div>
+                <div className="feature-item">
+                  <div className="feature-icon">
+                    <Globe />
+                  </div>
+                  <div className="feature-text">
+                    <h4>Global Reach</h4>
+                    <p>Worldwide presence</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="hero-visual">
+              <div className="floating-elements">
+                <div className="floating-card card-1">
+                  <MessageSquare />
+                </div>
+                <div className="floating-card card-2">
+                  <Heart />
+                </div>
+                <div className="floating-card card-3">
+                  <Star />
+                </div>
+                <div className="floating-card card-4">
+                  <Coffee />
+                </div>
+                <div className="floating-card card-5">
+                  <Zap />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Contact Form & Info */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-12">
-            {/* Contact Form */}
-            <div className="lg:col-span-2">
-              <Card className="shadow-2xl border-0 bg-gradient-to-br from-white to-gray-50">
-                <CardHeader className="pb-6">
-                  <CardTitle className="flex items-center gap-3 text-2xl">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                      <MessageCircle className="h-5 w-5 text-white" />
-                    </div>
-                    Get in Touch
-                  </CardTitle>
-                  <CardDescription className="text-lg text-gray-600">
-                    If you've got great products your making or looking to work
-                    with us then drop us a line.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="name"
-                          className="text-sm font-semibold text-gray-700"
-                        >
-                          Full Name
+      {/* Main Contact Section */}
+      <section className="main-contact-section">
+        <div className="contact-container">
+          <div className="contact-grid">
+            {/* Contact Form Column */}
+            <div className="contact-form-column">
+              <Badge className="section-badge" variant="secondary">
+                <Send className="badge-icon" />
+                Send Message
+              </Badge>
+
+              <h2 className="section-title">Get In Touch</h2>
+              <p className="section-description">
+                Ready to take the next step? Fill out the form below and we'll
+                get back to you with personalized solutions.
+              </p>
+
+              <Card className="contact-form-card">
+                <CardContent className="form-content">
+                  <form onSubmit={handleSubmit} className="contact-form">
+                    <div className="form-grid">
+                      <div className="form-group">
+                        <Label htmlFor="firstName" className="form-label">
+                          First Name *
                         </Label>
                         <Input
-                          id="name"
-                          name="name"
+                          id="firstName"
+                          name="firstName"
                           type="text"
                           required
-                          value={formData.name}
+                          value={formData.firstName}
                           onChange={handleChange}
-                          placeholder="Your full name"
-                          className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
+                          placeholder="John"
+                          className="form-input"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label
-                          htmlFor="email"
-                          className="text-sm font-semibold text-gray-700"
-                        >
-                          Email Address
+
+                      <div className="form-group">
+                        <Label htmlFor="lastName" className="form-label">
+                          Last Name *
+                        </Label>
+                        <Input
+                          id="lastName"
+                          name="lastName"
+                          type="text"
+                          required
+                          value={formData.lastName}
+                          onChange={handleChange}
+                          placeholder="Doe"
+                          className="form-input"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-grid">
+                      <div className="form-group">
+                        <Label htmlFor="email" className="form-label">
+                          Email Address *
                         </Label>
                         <Input
                           id="email"
@@ -133,18 +224,30 @@ const Contact = () => {
                           required
                           value={formData.email}
                           onChange={handleChange}
-                          placeholder="your@email.com"
-                          className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
+                          placeholder="john@example.com"
+                          className="form-input"
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <Label htmlFor="phone" className="form-label">
+                          Phone Number
+                        </Label>
+                        <Input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          placeholder="+1 (555) 123-4567"
+                          className="form-input"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="subject"
-                        className="text-sm font-semibold text-gray-700"
-                      >
-                        Subject
+                    <div className="form-group">
+                      <Label htmlFor="subject" className="form-label">
+                        Subject *
                       </Label>
                       <Input
                         id="subject"
@@ -153,17 +256,14 @@ const Contact = () => {
                         required
                         value={formData.subject}
                         onChange={handleChange}
-                        placeholder="What's this about?"
-                        className="h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
+                        placeholder="How can we help you?"
+                        className="form-input"
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="message"
-                        className="text-sm font-semibold text-gray-700"
-                      >
-                        Message
+                    <div className="form-group message-group">
+                      <Label htmlFor="message" className="form-label">
+                        Message *
                       </Label>
                       <Textarea
                         id="message"
@@ -171,171 +271,238 @@ const Contact = () => {
                         required
                         value={formData.message}
                         onChange={handleChange}
-                        placeholder="Tell us more about your inquiry..."
+                        placeholder="Tell us about your project, questions, or how we can help..."
+                        className="form-textarea"
                         rows={6}
-                        className="border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 resize-none"
                       />
                     </div>
 
-                    <Button
-                      type="submit"
-                      className="w-full h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold text-lg shadow-lg"
-                    >
-                      <Send className="h-5 w-5 mr-2" />
-                      Send Message
-                    </Button>
+                    <div className="form-actions">
+                      <Button type="submit" className="submit-btn">
+                        <Send className="btn-icon" />
+                        Send Message
+                        <ArrowRight className="btn-arrow" />
+                      </Button>
+
+                      <p className="form-note">
+                        We'll respond within 24 hours. Your information is
+                        secure and confidential.
+                      </p>
+                    </div>
                   </form>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Contact Information */}
-            <div className="space-y-6">
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center">
-                      <MapPin className="h-5 w-5 text-white" />
-                    </div>
-                    Visit Our Store
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">
-                      Address
-                    </h4>
-                    <p className="text-gray-600 leading-relaxed">
-                      66 Mott St, New York, New York,
-                      <br />
-                      Zip Code: 10006, AS
-                    </p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Phone</h4>
-                    <p className="text-gray-600">(623) 934-2400</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Email</h4>
-                    <p className="text-gray-600">EComposer@example.com</p>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-1">
-                      Open Time
-                    </h4>
-                    <p className="text-gray-600">
-                      Our store has re-opened for shopping,
-                      <br />
-                      exchange Every day 11am to 7pm
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Contact Information Column */}
+            <div className="contact-info-column">
+              <Badge className="section-badge" variant="secondary">
+                <Building2 className="badge-icon" />
+                Contact Info
+              </Badge>
 
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center">
-                      <Phone className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Phone</h3>
-                      <p className="text-gray-600">+1 (555) 123-4567</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <h2 className="section-title">Multiple Ways to Connect</h2>
+              <p className="section-description">
+                Choose the communication method that works best for you. We're
+                available across multiple channels to assist you.
+              </p>
 
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                      <Mail className="h-5 w-5 text-white" />
+              <div className="contact-methods">
+                <Card className="contact-method-card">
+                  <CardContent className="method-content">
+                    <div className="method-icon">
+                      <Phone />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Email</h3>
-                      <p className="text-gray-600">support@aawebshop.com</p>
+                    <div className="method-info">
+                      <h4 className="method-title">Phone Support</h4>
+                      <p className="method-detail">+1 (555) 123-4567</p>
+                      <p className="method-note">Mon-Fri 9AM-6PM EST</p>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
 
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                      <Clock className="h-5 w-5 text-white" />
+                <Card className="contact-method-card">
+                  <CardContent className="method-content">
+                    <div className="method-icon">
+                      <Mail />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">
-                        Business Hours
-                      </h3>
-                      <p className="text-gray-600">Mon-Fri: 9AM-6PM EST</p>
-                      <p className="text-gray-600">Sat-Sun: 10AM-4PM EST</p>
+                    <div className="method-info">
+                      <h4 className="method-title">Email Support</h4>
+                      <p className="method-detail">hello@ostaeasy.com</p>
+                      <p className="method-note">24/7 response guarantee</p>
                     </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="contact-method-card">
+                  <CardContent className="method-content">
+                    <div className="method-icon">
+                      <MapPin />
+                    </div>
+                    <div className="method-info">
+                      <h4 className="method-title">Visit Our Office</h4>
+                      <p className="method-detail">
+                        123 Innovation Drive
+                        <br />
+                        Tech Valley, CA 94043
+                      </p>
+                      <p className="method-note">By appointment only</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="contact-method-card">
+                  <CardContent className="method-content">
+                    <div className="method-icon">
+                      <MessageCircle />
+                    </div>
+                    <div className="method-info">
+                      <h4 className="method-title">Live Chat</h4>
+                      <p className="method-detail">Available on our website</p>
+                      <p className="method-note">Instant responses</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="business-hours">
+                <h3 className="hours-title">
+                  <Clock className="hours-icon" />
+                  Business Hours
+                </h3>
+                <div className="hours-grid">
+                  <div className="hour-item">
+                    <span className="day">Monday - Friday</span>
+                    <span className="time">9:00 AM - 6:00 PM</span>
                   </div>
-                </CardContent>
-              </Card>
+                  <div className="hour-item">
+                    <span className="day">Saturday</span>
+                    <span className="time">10:00 AM - 4:00 PM</span>
+                  </div>
+                  <div className="hour-item">
+                    <span className="day">Sunday</span>
+                    <span className="time">Closed</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 bg-white border-gray-200">
-              <Star className="h-4 w-4 mr-2 fill-yellow-400 text-yellow-400" />
-              Support
+      <section className="faq-section">
+        <div className="faq-container">
+          <div className="faq-header">
+            <Badge className="section-badge" variant="secondary">
+              <MessageSquare className="badge-icon" />
+              Frequently Asked
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-xl text-gray-600">
-              Quick answers to common questions. Can't find what you're looking
-              for? Send us a message!
+
+            <h2 className="section-title">Questions & Answers</h2>
+            <p className="section-description">
+              Find quick answers to common questions. Can't find what you're
+              looking for? Don't hesitate to reach out directly.
             </p>
           </div>
 
-          <div className="grid gap-6">
-            {[
-              {
-                question: "What's your return policy?",
-                answer:
-                  "We offer a 30-day return policy for all unworn items in original condition with tags attached.",
-              },
-              {
-                question: "How long does shipping take?",
-                answer:
-                  "Standard shipping takes 3-5 business days, while express shipping takes 1-2 business days.",
-              },
-              {
-                question: "Do you ship internationally?",
-                answer:
-                  "Yes, we ship to over 25 countries worldwide. Shipping costs and times vary by location.",
-              },
-              {
-                question: "How can I track my order?",
-                answer:
-                  "Once your order ships, you'll receive a tracking number via email to monitor your package.",
-              },
-            ].map((faq, index) => (
-              <Card
-                key={index}
-                className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-              >
-                <CardHeader>
-                  <CardTitle className="text-lg font-semibold text-gray-900 flex items-center justify-between">
-                    {faq.question}
-                    <ArrowRight className="h-5 w-5 text-gray-400" />
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="faq-content">
+            <Accordion type="single" collapsible className="faq-accordion">
+              <AccordionItem value="item-1" className="faq-item">
+                <AccordionTrigger className="faq-trigger">
+                  <span className="trigger-icon">
+                    <CheckCircle />
+                  </span>
+                  What is your typical response time for inquiries?
+                </AccordionTrigger>
+                <AccordionContent className="faq-content-text">
+                  We pride ourselves on quick responses. For email inquiries,
+                  you can expect a response within 24 hours during business
+                  days. For urgent matters, our live chat and phone support
+                  provide immediate assistance during business hours.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2" className="faq-item">
+                <AccordionTrigger className="faq-trigger">
+                  <span className="trigger-icon">
+                    <Shield />
+                  </span>
+                  How do you handle customer data and privacy?
+                </AccordionTrigger>
+                <AccordionContent className="faq-content-text">
+                  Your privacy is paramount to us. We follow strict data
+                  protection protocols and comply with GDPR and other privacy
+                  regulations. All information shared through our contact forms
+                  is encrypted and stored securely, used only for the purpose of
+                  responding to your inquiry.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3" className="faq-item">
+                <AccordionTrigger className="faq-trigger">
+                  <span className="trigger-icon">
+                    <Users />
+                  </span>
+                  Do you offer consultation services?
+                </AccordionTrigger>
+                <AccordionContent className="faq-content-text">
+                  Absolutely! We offer free initial consultations to understand
+                  your needs and discuss how we can help. These sessions can be
+                  conducted via phone, video call, or in-person at our office.
+                  Simply mention your interest in a consultation when you
+                  contact us.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-4" className="faq-item">
+                <AccordionTrigger className="faq-trigger">
+                  <span className="trigger-icon">
+                    <Award />
+                  </span>
+                  What makes your customer service different?
+                </AccordionTrigger>
+                <AccordionContent className="faq-content-text">
+                  We believe in personalized, human-centered support. Every
+                  inquiry is handled by experienced professionals who take the
+                  time to understand your unique situation. We don't use
+                  chatbots for complex issues and ensure you always have a
+                  direct line to real experts.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-5" className="faq-item">
+                <AccordionTrigger className="faq-trigger">
+                  <span className="trigger-icon">
+                    <Globe />
+                  </span>
+                  Do you provide support for international customers?
+                </AccordionTrigger>
+                <AccordionContent className="faq-content-text">
+                  Yes, we serve customers worldwide! While our primary business
+                  hours are EST, we have support staff in multiple time zones to
+                  accommodate international clients. Email support is available
+                  24/7, and we can schedule calls at convenient times for any
+                  time zone.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-6" className="faq-item">
+                <AccordionTrigger className="faq-trigger">
+                  <span className="trigger-icon">
+                    <Sparkles />
+                  </span>
+                  How can I stay updated with your latest offerings?
+                </AccordionTrigger>
+                <AccordionContent className="faq-content-text">
+                  Join our newsletter for the latest updates, product
+                  announcements, and exclusive offers. You can also follow us on
+                  social media platforms for real-time updates and
+                  behind-the-scenes content. We respect your inbox and only send
+                  valuable, relevant information.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </div>
         </div>
       </section>

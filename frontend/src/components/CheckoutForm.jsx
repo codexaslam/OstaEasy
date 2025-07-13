@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   PaymentElement,
   useElements,
@@ -54,50 +53,50 @@ const CheckoutForm = ({ onSuccess, onCancel }) => {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <CreditCard className="h-5 w-5 text-blue-600" />
-          Payment Details
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="border rounded-md p-4 bg-gray-50">
-            <PaymentElement />
-          </div>
+    <div className="w-full">
+      <div className="mb--md">
+        <h5 className="flex flex--center text--lg text--primary">
+          <CreditCard className="h-5 w-5 text-blue-600 mr-3" />
+          <span>Payment Details</span>
+        </h5>
+      </div>
 
-          <div className="flex gap-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={processing}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={!stripe || processing}
-              className="flex-1 bg-blue-600 hover:bg-blue-700"
-            >
-              {processing ? (
-                <div className="flex items-center">
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Processing...
-                </div>
-              ) : (
-                <div className="flex items-center">
-                  <CreditCard className="h-4 w-4 mr-2" />
-                  Pay Now
-                </div>
-              )}
-            </Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="border rounded-lg p-3 bg-white shadow-sm">
+          <PaymentElement />
+        </div>
+
+        <div className="flex gap-3 mt-4">
+          {" "}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={onCancel}
+            disabled={processing}
+            className="flex-1 h-11 mr--md"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={!stripe || processing}
+            className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            {processing ? (
+              <div className="flex items-center">
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Processing...
+              </div>
+            ) : (
+              <div className="flex items-center p--sm">
+                <CreditCard className="h-4 w-4 mr-2" />
+                Pay Now
+              </div>
+            )}
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 

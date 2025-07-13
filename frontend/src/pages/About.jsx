@@ -14,56 +14,39 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import "./About.scss";
 
 const About = () => {
+  const { t } = useTranslation();
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="about-page">
       {/* Hero Section */}
-      <section className="relative py-24 px-4 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 overflow-hidden">
-        <div className="absolute inset-0 bg-gray-50 opacity-30"></div>
-        <div className="relative max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <Badge
-                variant="outline"
-                className="mb-6 bg-white/50 border-blue-200 backdrop-blur-sm"
-              >
-                <Sparkles className="h-4 w-4 mr-2 text-blue-600" />
-                Est. 2024
+      <section className="hero-section">
+        <div className="hero-container">
+          <div className="hero-content">
+            <div className="hero-text">
+              <Badge variant="outline" className="hero-badge">
+                <Sparkles className="badge-icon" />
+                {t("about.established")}
               </Badge>
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Empowering{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                  Fashion
-                </span>{" "}
-                With Style
-              </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                We are AA Webshop - your destination for timeless style and
-                modern fashion. Where quality meets affordability, and every
-                piece tells a story.
-              </p>
-              <div className="flex gap-4">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-6 text-lg font-semibold shadow-lg"
-                >
-                  Shop Now
-                  <ArrowRight className="h-5 w-5 ml-2" />
+              <h1 className="hero-title">{t("about.empoweringFashion")}</h1>
+              <p className="hero-description">{t("about.heroDescription")}</p>
+              <div className="hero-buttons">
+                <Button size="lg" className="btn-primary">
+                  {t("hero.shopNow")}
+                  <ArrowRight className="btn-icon" />
                 </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-gray-300 px-8 py-6 text-lg font-semibold"
-                >
-                  Our Story
+                <Button variant="outline" size="lg" className="btn-secondary">
+                  {t("about.ourStory")}
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <div className="aspect-square bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl flex items-center justify-center">
-                <div className="w-48 h-48 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                  <Heart className="h-24 w-24 text-white" />
+            <div className="hero-visual">
+              <div className="hero-image">
+                <div className="hero-icon">
+                  <Heart className="heart-icon" />
                 </div>
               </div>
             </div>
@@ -72,92 +55,77 @@ const About = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-6">
-              <Badge variant="outline" className="bg-red-50 border-red-200">
-                <Target className="h-4 w-4 mr-2 text-red-600" />
-                Our Mission
+      <section className="mission-section">
+        <div className="mission-container">
+          <div className="mission-content">
+            <div className="mission-text">
+              <Badge variant="outline" className="mission-badge">
+                <Target className="badge-icon" />
+                {t("about.ourMission")}
               </Badge>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                Our mission is to empower people through sustainable fashion
-              </h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                We want everyone to look and feel good, while also doing our
-                part to help the environment. We believe that fashion should be
-                stylish, affordable and accessible to everyone. Body positivity
-                and inclusivity are values that are at the heart of our brand.
+              <h2 className="mission-title">{t("about.missionTitle")}</h2>
+              <p className="mission-description">
+                {t("about.missionDescription")}
               </p>
-              <div className="flex gap-4 pt-4">
-                <Button className="bg-red-600 hover:bg-red-700 text-white">
-                  Learn More
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </div>
+              <Button className="mission-btn">
+                {t("about.learnMore")}
+                <ArrowRight className="btn-icon" />
+              </Button>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="aspect-square bg-gradient-to-br from-red-100 to-orange-100 rounded-2xl"></div>
-              <div className="aspect-square bg-gradient-to-br from-orange-100 to-yellow-100 rounded-2xl mt-8"></div>
+            <div className="mission-images">
+              <div className="image-grid">
+                <div className="image-box image-1"></div>
+                <div className="image-box image-2"></div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Story Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge variant="outline" className="mb-4 bg-white border-gray-200">
-              <Award className="h-4 w-4 mr-2 text-yellow-600" />
-              Established 2024
+      <section className="story-section">
+        <div className="story-container">
+          <div className="story-header">
+            <Badge variant="outline" className="story-badge">
+              <Award className="badge-icon" />
+              {t("about.established")} 2024
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              AA Webshop was founded in 2024
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="story-title">ostaeasy was founded in 2024</h2>
+            <p className="story-subtitle">
               By a team of fashion enthusiasts with a passion for timeless style
               and sustainable practices.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <Card className="border-0 shadow-2xl bg-gradient-to-br from-white to-gray-50 p-8">
-              <CardContent className="space-y-6">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                  <Users className="h-8 w-8 text-white" />
+          <div className="story-content">
+            <Card className="story-card">
+              <CardContent className="story-card-content">
+                <div className="story-icon">
+                  <Users className="icon" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900">
-                  Quality is our priority
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  Our talented stylists have put together outfits that are
-                  perfect for the season. They've created a variety of ways to
-                  inspire your next fashion-forward look.
+                <h3 className="story-card-title">{t("about.qualityFirst")}</h3>
+                <p className="story-card-text">
+                  {t("about.qualityDescription")}
                 </p>
-                <Separator className="my-6" />
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-blue-600 mb-2">
-                      10K+
-                    </div>
-                    <div className="text-sm text-gray-600">Happy Customers</div>
+                <Separator className="story-separator" />
+                <div className="story-stats">
+                  <div className="stat">
+                    <div className="stat-number">10K+</div>
+                    <div className="stat-label">Happy Customers</div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-3xl font-bold text-purple-600 mb-2">
-                      500+
-                    </div>
-                    <div className="text-sm text-gray-600">Products</div>
+                  <div className="stat">
+                    <div className="stat-number">500+</div>
+                    <div className="stat-label">Products</div>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <div className="space-y-6">
-              <div className="aspect-[4/3] bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl"></div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="aspect-square bg-gradient-to-br from-green-100 to-blue-100 rounded-xl"></div>
-                <div className="aspect-square bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl"></div>
+            <div className="story-images">
+              <div className="story-main-image"></div>
+              <div className="story-small-images">
+                <div className="small-image small-1"></div>
+                <div className="small-image small-2"></div>
               </div>
             </div>
           </div>
@@ -165,72 +133,54 @@ const About = () => {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge
-              variant="outline"
-              className="mb-4 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200"
-            >
-              <Heart className="h-4 w-4 mr-2 text-blue-600" />
-              Our Values
+      <section className="values-section">
+        <div className="values-container">
+          <div className="values-header">
+            <Badge variant="outline" className="values-badge">
+              <Heart className="badge-icon" />
+              {t("about.ourValues")}
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              What We Stand For
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="values-title">{t("about.whyChooseUs")}</h2>
+            <p className="values-subtitle">
               Our core values guide everything we do, from product selection to
               customer service.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="values-grid">
             {[
               {
                 icon: Shield,
-                title: "High-Quality Materials",
-                description:
-                  "Crafted with precision and excellence, our products are meticulously engineered using premium materials.",
-                color: "from-blue-500 to-cyan-500",
+                title: t("about.qualityFirst"),
+                description: t("about.qualityDescription"),
+                colorClass: "blue-gradient",
               },
               {
                 icon: Star,
-                title: "Laconic Design",
-                description:
-                  "Simplicity refined. Our products embody the essence of minimalistic design, delivering effortless style.",
-                color: "from-purple-500 to-pink-500",
+                title: t("about.fastShipping"),
+                description: t("about.fastShippingDescription"),
+                colorClass: "purple-gradient",
               },
               {
                 icon: Globe,
-                title: "Various Sizes",
-                description:
-                  "Designed for every body and anyone, our collection embraces diversity with a wide range of sizes.",
-                color: "from-green-500 to-emerald-500",
+                title: t("about.customerSupport"),
+                description: t("about.customerSupportDescription"),
+                colorClass: "green-gradient",
               },
               {
                 icon: TrendingUp,
-                title: "Sustainable Fashion",
-                description:
-                  "We're committed to sustainable practices and ethical manufacturing for a better tomorrow.",
-                color: "from-orange-500 to-red-500",
+                title: t("about.sustainability"),
+                description: t("about.sustainabilityDescription"),
+                colorClass: "orange-gradient",
               },
             ].map((value, index) => (
-              <Card
-                key={index}
-                className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-white to-gray-50"
-              >
-                <CardContent className="p-8 text-center">
-                  <div
-                    className={`w-16 h-16 mx-auto mb-6 bg-gradient-to-r ${value.color} rounded-full flex items-center justify-center`}
-                  >
-                    <value.icon className="h-8 w-8 text-white" />
+              <Card key={index} className="value-card">
+                <CardContent className="value-card-content">
+                  <div className={`value-icon ${value.colorClass}`}>
+                    <value.icon className="icon" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">
-                    {value.title}
-                  </h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {value.description}
-                  </p>
+                  <h3 className="value-title">{value.title}</h3>
+                  <p className="value-description">{value.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -239,25 +189,20 @@ const About = () => {
       </section>
 
       {/* Customer Reviews */}
-      <section className="py-20 px-4 bg-gradient-to-br from-indigo-50 to-purple-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <Badge
-              variant="outline"
-              className="mb-4 bg-white/50 border-purple-200 backdrop-blur-sm"
-            >
-              <Star className="h-4 w-4 mr-2 fill-yellow-400 text-yellow-400" />
+      <section className="reviews-section">
+        <div className="reviews-container">
+          <div className="reviews-header">
+            <Badge variant="outline" className="reviews-badge">
+              <Star className="badge-icon star-filled" />
               Customer Reviews
             </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              What Our Customers Say
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="reviews-title">What Our Customers Say</h2>
+            <p className="reviews-subtitle">
               Real stories from real customers who love shopping with us.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="reviews-grid">
             {[
               {
                 name: "Robert Smith",
@@ -281,35 +226,21 @@ const About = () => {
                 avatar: "MC",
               },
             ].map((review, index) => (
-              <Card
-                key={index}
-                className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm"
-              >
-                <CardContent className="p-8">
-                  <div className="flex items-center mb-4">
+              <Card key={index} className="review-card">
+                <CardContent className="review-content">
+                  <div className="review-stars">
                     {[...Array(review.rating)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="h-5 w-5 fill-yellow-400 text-yellow-400"
-                      />
+                      <Star key={i} className="star star-filled" />
                     ))}
                   </div>
-                  <p className="text-gray-600 mb-6 leading-relaxed italic">
-                    "{review.review}"
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold">
-                        {review.avatar}
-                      </span>
+                  <p className="review-text">"{review.review}"</p>
+                  <div className="review-author">
+                    <div className="author-avatar">
+                      <span>{review.avatar}</span>
                     </div>
-                    <div>
-                      <div className="font-semibold text-gray-900">
-                        {review.name}
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        Verified Customer
-                      </div>
+                    <div className="author-info">
+                      <div className="author-name">{review.name}</div>
+                      <div className="author-label">Verified Customer</div>
                     </div>
                   </div>
                 </CardContent>
@@ -320,29 +251,19 @@ const About = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-purple-600">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Ready to Transform Your Style?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+      <section className="cta-section">
+        <div className="cta-container">
+          <h2 className="cta-title">Ready to Transform Your Style?</h2>
+          <p className="cta-description">
             Join thousands of satisfied customers who have discovered their
-            perfect style with AA Webshop.
+            perfect style with ostaeasy.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              variant="secondary"
-              className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 text-lg font-semibold"
-            >
+          <div className="cta-buttons">
+            <Button size="lg" variant="secondary" className="cta-btn-primary">
               Shop Collection
-              <ArrowRight className="h-5 w-5 ml-2" />
+              <ArrowRight className="btn-icon" />
             </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-6 text-lg font-semibold"
-            >
+            <Button size="lg" variant="outline" className="cta-btn-secondary">
               Contact Us
             </Button>
           </div>

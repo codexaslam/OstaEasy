@@ -1,3 +1,7 @@
+// Navbar component styles
+@use "../variables" as *;
+@use "../mixins" as *;
+
 .navbar {
   background-color: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -74,15 +78,21 @@
   padding: 8px 0;
   position: relative;
   transition: color 0.3s ease;
-}
 
-.navbar-menu-item:hover {
-  color: #666;
+  &:hover {
+    color: #666;
+  }
 }
 
 .dropdown {
   position: relative;
   cursor: pointer;
+
+  &:hover .dropdown-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
 }
 
 .dropdown-content {
@@ -99,25 +109,19 @@
   transform: translateY(-10px);
   transition: all 0.3s ease;
   z-index: 1000;
-}
 
-.dropdown:hover .dropdown-content {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
+  a {
+    display: block;
+    padding: 8px 16px;
+    color: #333;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background-color 0.3s ease;
 
-.dropdown-content a {
-  display: block;
-  padding: 8px 16px;
-  color: #333;
-  text-decoration: none;
-  font-size: 13px;
-  transition: background-color 0.3s ease;
-}
-
-.dropdown-content a:hover {
-  background-color: #f8f9fa;
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
 }
 
 .navbar-actions {
@@ -130,6 +134,13 @@
   position: relative;
   display: flex;
   align-items: center;
+
+  &:hover .search-input,
+  .search-input:focus {
+    width: 200px;
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .search-toggle {
@@ -140,10 +151,10 @@
   padding: 8px;
   border-radius: 4px;
   transition: all 0.3s ease;
-}
 
-.search-toggle:hover {
-  background-color: #f8f9fa;
+  &:hover {
+    background-color: #f8f9fa;
+  }
 }
 
 .search-input {
@@ -160,18 +171,11 @@
   opacity: 0;
   transition: all 0.3s ease;
   pointer-events: none;
-}
 
-.search-form:hover .search-input,
-.search-input:focus {
-  width: 200px;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #000;
+  &:focus {
+    outline: none;
+    border-color: #000;
+  }
 }
 
 .user-menu,
@@ -194,11 +198,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-}
 
-.navbar-action:hover {
-  background-color: #f8f9fa;
-  color: #000;
+  &:hover {
+    background-color: #f8f9fa;
+    color: #000;
+  }
 }
 
 .badge {

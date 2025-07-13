@@ -1,15 +1,3 @@
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft, Eye, EyeOff, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -65,7 +53,7 @@ const Signup = () => {
           text: "Your account has been created successfully. Please login.",
           icon: "success",
           confirmButtonText: "Go to Login",
-          confirmButtonColor: "#0ea5e9",
+          confirmButtonColor: "#000",
         }).then(() => {
           navigate("/login");
         });
@@ -80,177 +68,158 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Back Button */}
-        <Button
-          variant="ghost"
-          className="mb-6 text-gray-600 hover:text-gray-900"
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
+    <div className="auth-container">
+      <div className="auth-card auth-card--signup">
+        <div className="auth-header">
+          <h1 className="auth-title">Create Account</h1>
+          <p className="auth-subtitle">Join our community today</p>
+        </div>
 
-        <Card className="shadow-lg border-0">
-          <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
-            <CardDescription>
-              Join our community and start shopping today
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
+        {error && (
+          <div className="auth-error">
+            <span>{error}</span>
+          </div>
+        )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
-                <Input
-                  id="username"
-                  name="username"
-                  type="text"
-                  placeholder="Choose a username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  required
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone_number">Phone Number</Label>
-                <Input
-                  id="phone_number"
-                  name="phone_number"
-                  type="tel"
-                  placeholder="Enter your phone number"
-                  value={formData.phone_number}
-                  onChange={handleChange}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
-                <Input
-                  id="address"
-                  name="address"
-                  type="text"
-                  placeholder="Enter your address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Create a password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                    className="w-full pr-10"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    required
-                    className="w-full pr-10"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-green-600 hover:bg-green-700"
-                disabled={loading}
-              >
-                {loading ? (
-                  <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Creating account...
-                  </div>
-                ) : (
-                  <div className="flex items-center">
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Create Account
-                  </div>
-                )}
-              </Button>
-            </form>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                Already have an account?{" "}
-                <Link
-                  to="/login"
-                  className="font-medium text-green-600 hover:text-green-500 transition-colors"
-                >
-                  Sign in here
-                </Link>
-              </p>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="username" className="form-label">
+                Username
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Choose a username"
+                value={formData.username}
+                onChange={handleChange}
+                required
+                className="form-input"
+              />
             </div>
-          </CardContent>
-        </Card>
+
+            <div className="form-group">
+              <label htmlFor="email" className="form-label">
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="form-input"
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="phone_number" className="form-label">
+                Phone Number
+              </label>
+              <input
+                id="phone_number"
+                name="phone_number"
+                type="tel"
+                placeholder="Enter your phone number"
+                value={formData.phone_number}
+                onChange={handleChange}
+                required
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="address" className="form-label">
+                Address
+              </label>
+              <input
+                id="address"
+                name="address"
+                type="text"
+                placeholder="Enter your address"
+                value={formData.address}
+                onChange={handleChange}
+                required
+                className="form-input"
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">
+              Password
+            </label>
+            <div className="password-input-container">
+              <input
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="form-input"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="confirmPassword" className="form-label">
+              Confirm Password
+            </label>
+            <div className="password-input-container">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="form-input"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="auth-button auth-button--signup"
+            disabled={loading}
+          >
+            {loading ? "Creating account..." : "Create Account"}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <p>
+            Already have an account?{" "}
+            <Link to="/login" className="auth-link">
+              Sign in here
+            </Link>
+          </p>
+          <Link to="/" className="back-home-link">
+            ← Back to Home
+          </Link>
+        </div>
       </div>
     </div>
   );

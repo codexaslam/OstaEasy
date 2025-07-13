@@ -3,25 +3,30 @@ import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import { API_ENDPOINTS, ENV } from "../config/api";
+import { useCurrency } from "../hooks/useCurrency";
 import CheckoutForm from "./CheckoutForm";
-import "./StripeCheckout.css";
+import styles from "./StripeCheckout.module.scss";
 
-// Make sure to replace with your actual publishable key
-const stripePromise = loadStripe("pk_test_TLpdfZUwuHdj5TjQb7tGIaKp"); // Demo key for testing
+// Get Stripe publishable key from environment variables
+const stripePromise = loadStripe(
+  ENV.STRIPE_PUBLISHABLE_KEY || "pk_test_demo_key"
+);
 
 const StripeCheckout = ({ items, total, onSuccess, onCancel }) => {
   const [clientSecret, setClientSecret] = useState("");
   const [loading, setLoading] = useState(true);
+  const { primaryCurrency } = useCurrency();
 
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.post(
-          "http://localhost:8000/api/shop/create-payment-intent/",
+          API_ENDPOINTS.CREATE_PAYMENT_INTENT,
           {
             amount: Math.round(total * 100), // Convert to cents
-            currency: "usd",
+            currency: primaryCurrency.toLowerCase(), // Use user's preferred currency
           },
           {
             headers: {
@@ -29,6 +34,25 @@ const StripeCheckout = ({ items, total, onSuccess, onCancel }) => {
             },
           }
         );
+
+        // Check if this is a mock response for development
+        if (
+          response.data.client_secret === "pi_mock_client_secret_for_testing"
+        ) {
+          console.log("Mock payment detected:", response.data.message);
+          setLoading(false);
+          Swal.fire({
+            title: "Demo Mode",
+            text: "This is a demo payment. In production, real Stripe payment would be processed here.",
+            icon: "info",
+            confirmButtonText: "OK",
+          }).then(() => {
+            // Pass a mock payment intent for demo mode
+            onSuccess({ id: "pi_mock_payment_intent_id" });
+          });
+          return;
+        }
+
         setClientSecret(response.data.client_secret);
         setLoading(false);
       } catch (error) {
@@ -39,12 +63,14 @@ const StripeCheckout = ({ items, total, onSuccess, onCancel }) => {
           text: "Failed to initialize payment. Please try again.",
           icon: "error",
           confirmButtonText: "OK",
+        }).then(() => {
+          onCancel(); // This will reset the Cart loading state
         });
       }
     };
 
     createPaymentIntent();
-  }, [total]);
+  }, [total, primaryCurrency, onSuccess, onCancel]);
 
   const appearance = {
     theme: "stripe",
@@ -66,56 +92,66 @@ const StripeCheckout = ({ items, total, onSuccess, onCancel }) => {
 
   if (loading) {
     return (
-      <div className="stripe-checkout">
-        <div className="checkout-header">
-          <h2>Processing...</h2>
-          <button onClick={onCancel} className="close-btn">
-            ×
-          </button>
-        </div>
-        <div className="checkout-loading">
-          <div className="loading-spinner"></div>
-          <p>Setting up secure payment...</p>
+      <div className={styles.stripeCheckoutOverlay}>
+        <div className={styles.stripeCheckout}>
+          <div className={styles.checkoutHeader}>
+            <h2>Processing...</h2>
+            <button onClick={onCancel} className={styles.closeBtn}>
+              ×
+            </button>
+          </div>
+          <div className={styles.checkoutLoading}>
+            <div className={styles.loadingSpinner}></div>
+            <p>Setting up secure payment...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="stripe-checkout">
-      <div className="checkout-header">
-        <h2>Secure Checkout</h2>
-        <button onClick={onCancel} className="close-btn">
-          ×
-        </button>
-      </div>
-
-      <div className="checkout-content">
-        <div className="order-summary">
-          <h3>Order Summary</h3>
-          <div className="summary-items">
-            {items.map((item) => (
-              <div key={item.id} className="summary-item">
-                <div className="item-details">
-                  <span className="item-name">{item.item.title}</span>
-                  <span className="item-quantity">Qty: {item.quantity}</span>
-                </div>
-                <span className="item-price">
-                  ${(item.item.price * item.quantity).toFixed(2)}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="summary-total">
-            <span>Total: ${total.toFixed(2)}</span>
-          </div>
+    <div className={styles.stripeCheckoutOverlay}>
+      <div className={styles.stripeCheckout}>
+        <div className={styles.checkoutHeader}>
+          <h2>Secure Checkout</h2>
+          <button onClick={onCancel} className={styles.closeBtn}>
+            ×
+          </button>
         </div>
 
-        {clientSecret && (
-          <Elements options={options} stripe={stripePromise}>
-            <CheckoutForm onSuccess={onSuccess} onCancel={onCancel} />
-          </Elements>
-        )}
+        <div className={styles.checkoutContent}>
+          <div className={styles.orderSummary}>
+            <h3>
+              Order Summary ({items.length} item{items.length !== 1 ? "s" : ""})
+            </h3>
+            <div className={styles.summaryItems}>
+              {items.map((item, index) => (
+                <div key={item.id || index} className={styles.summaryItem}>
+                  <div className={styles.itemDetails}>
+                    <span className={styles.itemName}>
+                      {item.item?.title || "Unknown Item"}
+                    </span>
+                  </div>
+                  <span className={styles.itemPrice}>
+                    $
+                    {((item.item?.price || 0) * (item.quantity || 1)).toFixed(
+                      2
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className={styles.summaryTotal}>
+              <span>Total: ${(total || 0).toFixed(2)}</span>
+            </div>
+          </div>
+
+          {clientSecret && (
+            <Elements options={options} stripe={stripePromise}>
+              <CheckoutForm onSuccess={onSuccess} onCancel={onCancel} />
+            </Elements>
+          )}
+        </div>
       </div>
     </div>
   );
