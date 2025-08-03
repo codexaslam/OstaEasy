@@ -1,0 +1,21 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="32" height="32" rx="6" fill="#1f2937"/>
+  
+  <!-- Outer circle representing "O" -->
+  <circle cx="16" cy="16" r="12" stroke="white" stroke-width="2" fill="none"/>
+  
+  <!-- Shopping bag inside -->
+  <path d="M10 13l1.5-1.5h9L22 13v8c0 .8-.7 1.5-1.5 1.5h-9c-.8 0-1.5-.7-1.5-1.5V13z" 
+        stroke="white" stroke-width="1.5" fill="none"/>
+  
+  <!-- Bag handles -->
+  <path d="M13 11.5v-1c0-1.7 1.3-3 3-3s3 1.3 3 3v1" 
+        stroke="white" stroke-width="1.5" fill="none"/>
+  
+  <!-- Easy dots -->
+  <circle cx="14.5" cy="17" r="0.8" fill="white" opacity="0.7"/>
+  <circle cx="17.5" cy="17" r="0.8" fill="white" opacity="0.7"/>
+  
+  <!-- Dynamic accent -->
+  <path d="M6 9c3-3 6-1.5 9 0" stroke="white" stroke-width="1.2" fill="none" opacity="0.5"/>
+</svg>

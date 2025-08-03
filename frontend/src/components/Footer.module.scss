@@ -3,10 +3,10 @@
 @use "../styles/mixins" as *;
 
 .footer {
-  background-color: var(--dark-color, #222);
-  color: var(--bg-primary);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   padding: 40px 0 20px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
@@ -24,7 +24,7 @@
 
 .section {
   h4 {
-    color: var(--bg-primary);
+    color: var(--text-primary);
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 20px;
@@ -46,7 +46,7 @@
         transition: color 0.3s ease;
 
         &:hover {
-          color: var(--bg-primary);
+          color: var(--text-primary);
         }
       }
     }
@@ -55,7 +55,7 @@
 
 .brand {
   h3 {
-    color: #fff;
+    color: var(--text-primary);
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 16px;
@@ -64,7 +64,7 @@
   }
 
   p {
-    color: #ccc;
+    color: var(--text-secondary);
     font-size: 14px;
     line-height: 1.6;
     margin: 0;
@@ -72,7 +72,7 @@
 }
 
 .bottom {
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border-color);
   padding-top: 20px;
 }
 
@@ -84,7 +84,7 @@
   gap: 20px;
 
   p {
-    color: #ccc;
+    color: var(--text-secondary);
     font-size: 14px;
     margin: 0;
   }
@@ -95,7 +95,7 @@
   gap: 16px;
 
   a {
-    color: #ccc;
+    color: var(--text-secondary);
     padding: 8px;
     border-radius: 4px;
     transition: all 0.3s ease;
@@ -104,8 +104,8 @@
     justify-content: center;
 
     &:hover {
-      color: #fff;
-      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      background-color: var(--bg-primary);
     }
   }
 }

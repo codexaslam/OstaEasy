@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { LiaFacebookF, LiaInstagram, LiaTwitter } from "react-icons/lia";
 import { Link } from "react-router-dom";
 import styles from "./Footer.module.scss";
+import Logo from "./Logo";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -12,7 +13,7 @@ const Footer = () => {
         <div className={styles.content}>
           <div className={styles.section}>
             <div className={styles.brand}>
-              <h3>{t("footer.brandName")}</h3>
+              <Logo size="sm" />
               <p>{t("footer.brandDescription")}</p>
             </div>
           </div>

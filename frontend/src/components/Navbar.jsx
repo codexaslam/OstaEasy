@@ -14,6 +14,7 @@ import { useCart } from "../hooks/useCart";
 import Cart from "./Cart";
 import CurrencySelector from "./CurrencySelector";
 import LanguageSelector from "./LanguageSelector";
+import Logo from "./Logo";
 import styles from "./Navbar.module.scss";
 import ThemeToggle from "./ThemeToggle";
 
@@ -129,7 +130,7 @@ const Navbar = () => {
         <div className={styles.container}>
           <div className={styles.content}>
             <Link to="/" className={styles.logo}>
-              <span className={styles.logoText}>OSTAEASY</span>
+              <Logo size="md" />
             </Link>
 
             <div className={styles.nav}>

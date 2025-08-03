@@ -44,6 +44,9 @@
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.1);
 
+  // Logo Filter
+  --logo-filter: brightness(0.3) saturate(1.2);
+
   // Interactive Colors
   --primary-hover: #333333;
 }
@@ -92,6 +95,9 @@
   --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.5);
+
+  // Logo Filter
+  --logo-filter: none;
 
   // Interactive Colors
   --primary-hover: #cccccc;

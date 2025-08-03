@@ -112,7 +112,7 @@
     opacity: 0.8;
 
     &-separator {
-      color: $text-light;
+      color: var(--text-light);
     }
   }
 
@@ -338,7 +338,7 @@
   &__filter-title {
     font-size: $font-size-md;
     font-weight: $font-weight-semibold;
-    color: $text-primary;
+    color: var(--text-primary);
     margin-bottom: $spacing-md;
   }
 
@@ -489,12 +489,12 @@
     flex-direction: column;
     padding: $spacing-4xl;
     text-align: center;
-    color: $text-secondary;
+    color: var(--text-secondary);
 
     h3 {
       font-size: $font-size-xl;
       margin-bottom: $spacing-md;
-      color: $text-primary;
+      color: var(--text-primary);
     }
 
     p {

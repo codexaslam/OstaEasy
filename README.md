@@ -2,8 +2,8 @@
 
 ## Developer Information
 
-- **Name:** Aslam Hossain
-- **Email:** aslamhossain@example.com
+- **Name:** Md Aslam Hossain
+- **Email:** aslam.hossain@abo.fi
 
 ## Implemented Requirements
 

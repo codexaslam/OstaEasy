@@ -3,6 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import axios from "axios";
 import { AlertCircle, Edit3, Save, X } from "lucide-react";
@@ -15,6 +22,7 @@ const EditItemForm = ({ item, onItemUpdated, onCancel }) => {
     title: item.title,
     description: item.description,
     price: item.price,
+    category: item.category || "clothing",
     image_url: item.image_url || "",
   });
   const [loading, setLoading] = useState(false);
@@ -33,7 +41,23 @@ const EditItemForm = ({ item, onItemUpdated, onCancel }) => {
     setError("");
 
     try {
-      await axios.put(API_ENDPOINTS.ITEM_UPDATE(item.id), formData);
+      const token = localStorage.getItem("token");
+      console.log("Updating item with ID:", item.id);
+      console.log("Form data:", formData);
+      console.log("API endpoint:", API_ENDPOINTS.ITEM_UPDATE(item.id));
+
+      const response = await axios.put(
+        API_ENDPOINTS.ITEM_UPDATE(item.id),
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Update response:", response.data);
       onItemUpdated();
       Swal.fire({
         title: "Success!",
@@ -44,7 +68,13 @@ const EditItemForm = ({ item, onItemUpdated, onCancel }) => {
       });
     } catch (error) {
       console.error("Error updating item:", error);
-      setError(error.response?.data?.error || "Failed to update item");
+      console.error("Error response:", error.response);
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        `Failed to update item (${error.response?.status})`;
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -116,6 +146,27 @@ const EditItemForm = ({ item, onItemUpdated, onCancel }) => {
                 step="0.01"
                 placeholder="0.00"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <Select
+                value={formData.category}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, category: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="clothing">Clothing</SelectItem>
+                  <SelectItem value="accessories">Accessories</SelectItem>
+                  <SelectItem value="bags">Bags</SelectItem>
+                  <SelectItem value="shoes">Shoes</SelectItem>
+                  <SelectItem value="sunglasses">Sunglasses</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
