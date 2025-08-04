@@ -17,7 +17,6 @@ const ItemCard = ({
   currentUser,
   showDescription = false,
   isMyItem = false,
-  onEditPrice = null,
 }) => {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -194,7 +193,7 @@ const ItemCard = ({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                if (onEditPrice) onEditPrice(item);
+                navigate(`/edit-item/${item.id}`);
               }}
               className={styles.editBtn}
             >

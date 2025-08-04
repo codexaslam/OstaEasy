@@ -182,12 +182,11 @@
     "addItem": "Lägg till artikel",
     "adding": "Lägger till...",
     "categories": {
-      "electronics": "Elektronik",
       "clothing": "Kläder",
-      "home-garden": "Hem & Trädgård",
-      "sports-outdoors": "Sport & Utomhus",
-      "books-media": "Böcker & Media",
-      "toys-games": "Leksaker & Spel"
+      "accessories": "Accessoarer",
+      "bags": "Väskor",
+      "shoes": "Skor",
+      "sunglasses": "Solglasögon"
     },
     "validation": {
       "titleRequired": "Titel krävs",

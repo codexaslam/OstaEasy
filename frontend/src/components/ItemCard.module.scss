@@ -30,8 +30,7 @@
       transform: translateY(0);
     }
 
-    .addToCartBtn,
-    .editBtn {
+    .addToCartBtn {
       opacity: 1;
       transform: translateY(0);
     }
@@ -252,12 +251,12 @@
   transition: all $transition-normal;
   border: 1px solid $primary-color;
   width: 100%;
-  opacity: 0;
-  transform: translateY(10px);
+  opacity: 1; // Always visible for edit buttons
+  transform: translateY(0); // Always in position
 
   &:hover {
     background: $primary-color;
-    transform: translateY(0);
+    transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 }

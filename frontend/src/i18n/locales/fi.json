@@ -183,12 +183,11 @@
     "addItem": "Lisää tuote",
     "adding": "Lisätään...",
     "categories": {
-      "electronics": "Elektroniikka",
       "clothing": "Vaatteet",
-      "home-garden": "Koti & Puutarha",
-      "sports-outdoors": "Urheilu & Ulkoilu",
-      "books-media": "Kirjat & Media",
-      "toys-games": "Lelut & Pelit"
+      "accessories": "Asusteet",
+      "bags": "Laukut",
+      "shoes": "Kengät",
+      "sunglasses": "Aurinkolasit"
     },
     "validation": {
       "titleRequired": "Otsikko on pakollinen",

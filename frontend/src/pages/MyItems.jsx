@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AddItemForm from "../components/AddItemForm";
-import EditItemForm from "../components/EditItemForm";
 import ItemCard from "../components/ItemCard";
 import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
@@ -17,7 +16,6 @@ const MyItems = () => {
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("on_sale");
-  const [editingItem, setEditingItem] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -34,11 +32,6 @@ const MyItems = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleItemUpdated = () => {
-    setEditingItem(null);
-    fetchMyItems();
   };
 
   const handleItemAdded = () => {
@@ -82,7 +75,6 @@ const MyItems = () => {
               currentUser={user}
               onAddToCart={() => {}} // Disable add to cart for own items
               isMyItem={type === "on_sale"}
-              onEditPrice={type === "on_sale" ? setEditingItem : null}
             />
 
             {/* Additional info specific to MyItems */}
@@ -161,14 +153,6 @@ const MyItems = () => {
           renderItems(items[activeTab], activeTab)
         )}
       </div>
-
-      {editingItem && (
-        <EditItemForm
-          item={editingItem}
-          onItemUpdated={handleItemUpdated}
-          onCancel={() => setEditingItem(null)}
-        />
-      )}
     </div>
   );
 };

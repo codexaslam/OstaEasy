@@ -275,15 +275,15 @@
 }
 
 .info-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1rem;
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-color: var(--border-hover);
+    box-shadow: 0 2px 8px var(--shadow-color);
   }
 }
 
@@ -291,7 +291,7 @@
   display: block;
   font-size: $font-size-xs;
   font-weight: $font-weight-medium;
-  color: $text-secondary;
+  color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   margin-bottom: 0.25rem;
@@ -301,7 +301,7 @@
   display: block;
   font-size: $font-size-base;
   font-weight: $font-weight-medium;
-  color: $text-primary;
+  color: var(--text-primary);
   line-height: 1.5;
 }
 

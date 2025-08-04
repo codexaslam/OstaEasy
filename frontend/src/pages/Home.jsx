@@ -7,7 +7,7 @@ import {
   LiaShippingFastSolid,
   LiaTruckSolid,
 } from "react-icons/lia";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import AddItemForm from "../components/AddItemForm";
 import Cart from "../components/Cart";
@@ -22,6 +22,7 @@ const Home = () => {
   const { user } = useAuth();
   const { addToCart, cartItems, fetchCartItems } = useCart();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -35,6 +36,8 @@ const Home = () => {
       subtitle: t("hero.saveUp"),
       description: t("hero.discover"),
       buttonText: t("hero.shopNow"),
+      action: "scroll",
+      target: "categories-section", // Scroll to categories section
       image:
         "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     },
@@ -43,6 +46,8 @@ const Home = () => {
       subtitle: t("hero.discountOff"),
       description: t("hero.refreshWardrobe"),
       buttonText: t("hero.exploreCollection"),
+      action: "navigate",
+      target: "/category/clothing", // Navigate to clothing category
       image:
         "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     },
@@ -51,6 +56,8 @@ const Home = () => {
       subtitle: t("hero.freshStyles"),
       description: t("hero.shopLatest"),
       buttonText: t("hero.viewNew"),
+      action: "scroll",
+      target: "bestsellers-section", // Scroll to bestsellers section
       image:
         "https://images.unsplash.com/photo-1469334031218-e382a71b716b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     },
@@ -133,6 +140,21 @@ const Home = () => {
       rating: 5,
     },
   ];
+
+  // Handle hero button clicks
+  const handleHeroButtonClick = (slide) => {
+    if (slide.action === "scroll" && slide.target) {
+      const targetElement = document.querySelector(`.${slide.target}`);
+      if (targetElement) {
+        targetElement.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    } else if (slide.action === "navigate" && slide.target) {
+      navigate(slide.target);
+    }
+  };
 
   useEffect(() => {
     const searchQuery = searchParams.get("search");
@@ -260,7 +282,12 @@ const Home = () => {
               <h1 className="hero-title">{slide.title}</h1>
               <h2 className="hero-subtitle">{slide.subtitle}</h2>
               <p className="hero-description">{slide.description}</p>
-              <button className="hero-btn">{slide.buttonText}</button>
+              <button
+                className="hero-btn"
+                onClick={() => handleHeroButtonClick(slide)}
+              >
+                {slide.buttonText}
+              </button>
             </div>
           </div>
         ))}

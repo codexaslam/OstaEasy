@@ -183,12 +183,11 @@
     "addItem": "Add Item",
     "adding": "Adding...",
     "categories": {
-      "electronics": "Electronics",
       "clothing": "Clothing",
-      "home-garden": "Home & Garden",
-      "sports-outdoors": "Sports & Outdoors",
-      "books-media": "Books & Media",
-      "toys-games": "Toys & Games"
+      "accessories": "Accessories",
+      "bags": "Bags",
+      "shoes": "Shoes",
+      "sunglasses": "Sunglasses"
     },
     "validation": {
       "titleRequired": "Title is required",
