@@ -1,0 +1,81 @@
+# Finnish translations for ostaeasy
+msgid ""
+msgstr ""
+"Project-Id-Version: ostaeasy\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-13 12:00+0000\n"
+"PO-Revision-Date: 2025-01-13 12:00+0000\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: shop/models.py
+msgid "Item"
+msgstr "Tuote"
+
+msgid "Items"
+msgstr "Tuotteet"
+
+msgid "Cart"
+msgstr "Ostoskori"
+
+msgid "Purchase"
+msgstr "Osto"
+
+msgid "Category"
+msgstr "Kategoria"
+
+#: shop/serializers.py
+msgid "Price must be positive"
+msgstr "Hinnan on oltava positiivinen"
+
+msgid "Item not found"
+msgstr "Tuotetta ei löydy"
+
+msgid "Item already in cart"
+msgstr "Tuote on jo ostoskorissa"
+
+#: users/models.py
+msgid "User"
+msgstr "Käyttäjä"
+
+msgid "Users"
+msgstr "Käyttäjät"
+
+#: api responses
+msgid "Login successful"
+msgstr "Kirjautuminen onnistui"
+
+msgid "Invalid credentials"
+msgstr "Virheelliset kirjautumistiedot"
+
+msgid "User created successfully"
+msgstr "Käyttäjä luotu onnistuneesti"
+
+msgid "Email already exists"
+msgstr "Sähköpostiosoite on jo käytössä"
+
+msgid "Item added to cart successfully"
+msgstr "Tuote lisätty ostoskoriin onnistuneesti"
+
+msgid "Item removed from cart"
+msgstr "Tuote poistettu ostoskorista"
+
+msgid "Order placed successfully"
+msgstr "Tilaus tehty onnistuneesti"
+
+msgid "Payment processing failed"
+msgstr "Maksun käsittely epäonnistui"
+
+msgid "Item updated successfully"
+msgstr "Tuote päivitetty onnistuneesti"
+
+msgid "Item deleted successfully"
+msgstr "Tuote poistettu onnistuneesti"
+
+msgid "Insufficient permissions"
+msgstr "Riittämättömät oikeudet"
+
+msgid "Authentication required"
+msgstr "Kirjautuminen vaaditaan"

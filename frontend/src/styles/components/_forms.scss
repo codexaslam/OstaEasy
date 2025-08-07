@@ -1,0 +1,91 @@
+// Form component styles
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.form {
+  &__group {
+    margin-bottom: $spacing-lg;
+  }
+
+  &__label {
+    display: block;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    color: $text-primary;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__input {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    border: 1px solid $border-color;
+    border-radius: $border-radius-sm;
+    font-size: $font-size-sm;
+    font-family: $font-family-primary;
+    transition: border-color $transition-normal;
+
+    &:focus {
+      border-color: $primary-color;
+      outline: none;
+    }
+
+    &::placeholder {
+      color: $text-light;
+    }
+  }
+
+  &__textarea {
+    @extend .form__input;
+    resize: vertical;
+    min-height: 120px;
+  }
+
+  &__select {
+    @extend .form__input;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+
+  &__error {
+    color: $danger-color;
+    font-size: $font-size-xs;
+    margin-top: $spacing-xs;
+  }
+
+  &__help {
+    color: $text-secondary;
+    font-size: $font-size-xs;
+    margin-top: $spacing-xs;
+  }
+
+  &__submit {
+    @include button-primary;
+    width: 100%;
+    padding: $spacing-md;
+    font-size: $font-size-base;
+  }
+}
+
+// Checkbox and radio styles
+.checkbox,
+.radio {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+
+  input {
+    width: 18px;
+    height: 18px;
+    accent-color: $primary-color;
+  }
+
+  label {
+    font-size: $font-size-sm;
+    color: $text-primary;
+    cursor: pointer;
+  }
+}

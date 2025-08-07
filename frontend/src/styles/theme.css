@@ -1,0 +1,114 @@
+/* Global Dark Mode Styles */
+/* This file contains base styles that need to be applied globally */
+
+:root {
+  color-scheme: light;
+}
+
+:root.dark {
+  color-scheme: dark;
+}
+
+/* Base body styles with theme support */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Make sure all elements inherit the transition */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+/* SweetAlert2 dark mode overrides */
+.dark .swal2-popup {
+  background-color: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.dark .swal2-title {
+  color: var(--text-primary) !important;
+}
+
+.dark .swal2-content {
+  color: var(--text-secondary) !important;
+}
+
+.dark .swal2-confirm {
+  background-color: var(--primary-color) !important;
+  color: var(--bg-primary) !important;
+  border: none !important;
+}
+
+.dark .swal2-cancel {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.dark .swal2-input {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.dark .swal2-select {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.dark .swal2-textarea {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Scrollbar styling for dark mode */
+.dark::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dark::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+.dark::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+.dark::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Form elements dark mode support */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+/* Button styles for dark mode */
+.dark button {
+  color: var(--text-primary);
+}
+
+/* Link styles for dark mode */
+.dark a {
+  color: var(--text-primary);
+}
+
+.dark a:hover {
+  color: var(--primary-color);
+}

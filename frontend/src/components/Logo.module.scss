@@ -1,0 +1,45 @@
+/* Logo Component Styles */
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoImage {
+  transition: filter 0.3s ease;
+
+  /* Use CSS custom property for theme-aware filtering */
+  filter: var(--logo-filter);
+}
+
+/* Responsive logo sizing */
+.logoImage {
+  max-width: 120px;
+  min-width: 60px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Size variations */
+.small .logoImage {
+  max-width: 80px;
+  min-width: 40px;
+}
+
+.medium .logoImage {
+  max-width: 120px;
+  min-width: 60px;
+}
+
+.large .logoImage {
+  max-width: 160px;
+  min-width: 80px;
+}
+
+.extraLarge .logoImage {
+  max-width: 200px;
+  min-width: 100px;
+}

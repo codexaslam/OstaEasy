@@ -1,0 +1,330 @@
+// Navbar CSS Module
+@use "../styles/variables" as *;
+@use "../styles/mixins" as *;
+
+.navbar {
+  background-color: var(--bg-primary);
+  box-shadow: 0 1px 3px var(--shadow-color);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.topBar {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  color: var(--text-secondary);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.topBarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.topBarLeft,
+.topBarRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.divider {
+  color: var(--border-color);
+}
+
+.main {
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.logo {
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--primary-color);
+  letter-spacing: -0.5px;
+  font-family: "Jost", sans-serif;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+
+  .logoText {
+    color: var(--primary-color);
+  }
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex: 1;
+  justify-content: center;
+}
+
+.navLink {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Jost", sans-serif;
+  padding: 8px 0;
+  position: relative;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--text-secondary);
+  }
+
+  &.active {
+    color: var(--primary-color);
+    font-weight: 600;
+
+    &::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #000;
+      border-radius: 1px;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  padding: 2px;
+  border: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  input {
+    border: none;
+    background: transparent;
+    padding: 8px 12px;
+    font-size: 14px;
+    width: 200px;
+    outline: none;
+    color: var(--text-primary);
+
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      color: #000;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+.userMenu,
+.guestMenu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.actionBtn {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: var(--bg-secondary);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    background-color: var(--border-color);
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  &.activeAction {
+    background-color: var(--primary-color);
+    color: var(--bg-primary);
+
+    &:hover {
+      background-color: var(--text-secondary);
+      color: var(--bg-primary);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.cartBtn {
+  position: relative;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+
+  &:hover {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    background-color: var(--bg-secondary);
+    transform: translateY(0);
+  }
+
+  &:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  &::after {
+    content: attr(data-count);
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--primary-color);
+    color: var(--bg-primary);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 10px;
+    line-height: 1;
+    min-width: 16px;
+    text-align: center;
+    display: block;
+    transform: translate(25%, -25%);
+    border: 1px solid var(--bg-primary);
+    box-shadow: var(--shadow-sm);
+  }
+
+  &[data-count="0"]::after,
+  &[data-count=""]::after {
+    display: none;
+  }
+}
+
+// Media queries
+@media (max-width: 992px) {
+  .nav {
+    gap: 24px;
+  }
+
+  .search input {
+    width: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .topBarContent {
+    font-size: 11px;
+    gap: 8px;
+  }
+
+  .content {
+    padding: 12px 0;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .actions {
+    gap: 12px;
+  }
+
+  .search input {
+    width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .topBarRight {
+    display: none;
+  }
+
+  .topBarContent {
+    justify-content: center;
+  }
+
+  .actions {
+    gap: 8px;
+  }
+
+  .search {
+    display: none;
+  }
+}

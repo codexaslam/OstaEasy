@@ -1,0 +1,430 @@
+// Modern Auth pages styles (Login and Signup)
+@use "../variables" as *;
+@use "../mixins" as *;
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--bg-gradient);
+  font-family: $font-family-primary;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.auth-card {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 3rem;
+  max-width: 420px;
+  width: 100%;
+  border: 1px solid var(--border-color);
+
+  &--signup {
+    max-width: 520px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 2rem;
+    margin: 1rem;
+  }
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.auth-logo {
+  display: inline-block;
+  font-size: 3rem; // Increased from $font-size-3xl (1.875rem/30px) to 3rem (48px)
+  font-weight: $font-weight-bold;
+  color: var(--text-primary);
+  text-decoration: none;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2.5rem; // Responsive: 2.5rem (40px) on mobile
+  }
+}
+
+.auth-title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.8px;
+}
+
+.auth-subtitle {
+  font-size: $font-size-base;
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: $font-weight-normal;
+}
+
+.auth-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+
+  span {
+    color: #dc2626;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+}
+
+.auth-form {
+  margin-bottom: 2rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: $font-size-base;
+  font-family: $font-family-primary;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--shadow-color);
+  }
+
+  &::placeholder {
+    color: var(--text-light);
+  }
+
+  &:hover {
+    border-color: var(--border-hover);
+  }
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .form-input {
+    padding-right: 3rem;
+  }
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+}
+
+.auth-button {
+  width: 100%;
+  padding: 1rem;
+  background: var(--primary-color);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: 8px;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  font-family: $font-family-primary;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &:hover:not(:disabled) {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  &--signup {
+    background: linear-gradient(135deg, #28a745, #20c997);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, #218838, #1bb589);
+    }
+  }
+}
+
+// Currency section styles for Account page
+.currency-section {
+  padding: 1.5rem 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  margin: 1.5rem 0;
+}
+
+// Password section specific to account page
+.password-section {
+  padding-top: 1.5rem;
+}
+
+// Modern Account page styles
+.account-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #f1f5f9;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+
+  &:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  &:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  &:nth-child(3) {
+    animation-delay: 0.3s;
+  }
+
+  &:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.4px;
+}
+
+.section-icon {
+  color: $primary-color;
+  font-size: 1.25rem;
+}
+
+.section-subtitle {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.5;
+}
+
+.user-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.info-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 2px 8px var(--shadow-color);
+  }
+}
+
+.info-label {
+  display: block;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 0.25rem;
+}
+
+.info-value {
+  display: block;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+// Success message styling
+.auth-success {
+  background: #f0f9ff;
+  border: 1px solid #7dd3fc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+
+  span {
+    color: #0369a1;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+  }
+}
+
+// Password-specific button styling
+.auth-button--password {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  margin-top: 0.5rem;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+  }
+
+  .loading-spinner {
+    margin-right: 0.5rem;
+    animation: spin 1s linear infinite;
+  }
+}
+
+.auth-footer {
+  text-align: center;
+
+  p {
+    margin-bottom: 1rem;
+    color: $text-secondary;
+    font-size: $font-size-sm;
+  }
+}
+
+.auth-link {
+  color: $primary-color;
+  text-decoration: none;
+  font-weight: $font-weight-medium;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: #333;
+    text-decoration: underline;
+  }
+}
+
+.back-home-link {
+  display: inline-flex;
+  align-items: center;
+  color: $text-secondary;
+  text-decoration: none;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: $text-primary;
+    transform: translateX(-2px);
+  }
+}
+
+// Loading animation
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+// Responsive design improvements
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 0.5rem;
+  }
+
+  .auth-card {
+    padding: 1.5rem;
+    margin: 0.5rem;
+  }
+
+  .auth-title {
+    font-size: $font-size-2xl;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .user-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-card {
+    padding: 0.75rem;
+  }
+
+  .section-title {
+    font-size: $font-size-base;
+  }
+}

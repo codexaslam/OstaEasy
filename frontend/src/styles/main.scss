@@ -1,0 +1,23 @@
+// Main SCSS file for the webshop
+// This file imports all the SCSS partials and should be imported in main.jsx
+
+// Variables and mixins (using @use instead of @import to avoid conflicts)
+@use "variables" as *;
+@use "mixins" as *;
+
+// Base styles
+@use "base";
+
+// Components (only import files that exist)
+@use "components/forms";
+@use "components/stripe-checkout";
+@use "components/add-edit-item-form";
+
+// Pages (only import files that exist)
+@use "pages/home";
+@use "pages/auth";
+@use "pages/item-details";
+@use "pages/my-items";
+@use "pages/purchase-history";
+@use "pages/category";
+@use "pages/dashboard";

@@ -1,0 +1,81 @@
+# Swedish translations for ostaeasy
+msgid ""
+msgstr ""
+"Project-Id-Version: ostaeasy\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-13 12:00+0000\n"
+"PO-Revision-Date: 2025-01-13 12:00+0000\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: shop/models.py
+msgid "Item"
+msgstr "Artikel"
+
+msgid "Items"
+msgstr "Artiklar"
+
+msgid "Cart"
+msgstr "Varukorg"
+
+msgid "Purchase"
+msgstr "Köp"
+
+msgid "Category"
+msgstr "Kategori"
+
+#: shop/serializers.py
+msgid "Price must be positive"
+msgstr "Priset måste vara positivt"
+
+msgid "Item not found"
+msgstr "Artikel hittades inte"
+
+msgid "Item already in cart"
+msgstr "Artikel finns redan i varukorgen"
+
+#: users/models.py
+msgid "User"
+msgstr "Användare"
+
+msgid "Users"
+msgstr "Användare"
+
+#: api responses
+msgid "Login successful"
+msgstr "Inloggning lyckades"
+
+msgid "Invalid credentials"
+msgstr "Ogiltiga inloggningsuppgifter"
+
+msgid "User created successfully"
+msgstr "Användare skapad framgångsrikt"
+
+msgid "Email already exists"
+msgstr "E-postadressen finns redan"
+
+msgid "Item added to cart successfully"
+msgstr "Artikel tillagd i varukorg framgångsrikt"
+
+msgid "Item removed from cart"
+msgstr "Artikel borttagen från varukorg"
+
+msgid "Order placed successfully"
+msgstr "Beställning lagd framgångsrikt"
+
+msgid "Payment processing failed"
+msgstr "Betalningshantering misslyckades"
+
+msgid "Item updated successfully"
+msgstr "Artikel uppdaterad framgångsrikt"
+
+msgid "Item deleted successfully"
+msgstr "Artikel raderad framgångsrikt"
+
+msgid "Insufficient permissions"
+msgstr "Otillräckliga behörigheter"
+
+msgid "Authentication required"
+msgstr "Autentisering krävs"
