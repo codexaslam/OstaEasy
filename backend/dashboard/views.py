@@ -58,8 +58,7 @@ def populate_database(request):
                 password=f'pass{i}',
                 email=f'testuser{i}@shop.aa'
             )
-        
-        users.append(user)
+            users.append(user)
         
         # Demo item categories and data - matching the database model categories
         categories = {
@@ -174,7 +173,10 @@ def populate_database(request):
         
         # Create 200 items for each category (1000 total items)
         items_created = 0
+        failed_items = []
+        
         for category_key, category_data in categories.items():
+            category_items_created = 0
             for i in range(200):  # 200 items per category
                 try:
                     # Randomly select an item from the category
@@ -313,8 +315,8 @@ def populate_database(request):
                     min_price, max_price = category_data['price_range']
                     price = round(random.uniform(min_price, max_price), 2)
                     
-                    # Randomly assign to one of the first 3 users (sellers)
-                    seller = users[random.randint(0, 2)]
+                    # Randomly assign to one of the users (sellers)
+                    seller = users[random.randint(0, len(users) - 1)]
                     
                     # Generate category-specific image URL with themed approach
                     # Using a combination of placeholder services and category-specific parameters
@@ -354,9 +356,20 @@ def populate_database(request):
                     # Primary image URL with category-specific seed
                     image_url = f"{theme['service']}{image_seed}"
                     
+                    # Ensure title doesn't exceed 200 characters (database limit)
+                    if len(title) > 200:
+                        title = title[:197] + "..."
+                    
+                    # Add unique identifier to prevent duplicates
+                    unique_title = f"{title} #{category_items_created + 1}"
+                    if len(unique_title) > 200:
+                        # If still too long, truncate the base title more
+                        base_length = 200 - len(f" #{category_items_created + 1}")
+                        unique_title = f"{title[:base_length]}#{category_items_created + 1}"
+                    
                     # Create the item
                     item = Item.objects.create(
-                        title=title,
+                        title=unique_title,
                         description=description,
                         price=Decimal(str(price)),
                         category=category_key,  # Set the category properly
@@ -364,13 +377,27 @@ def populate_database(request):
                         image_url=image_url
                     )
                     items_created += 1
+                    category_items_created += 1
                 except Exception as item_error:
+                    failed_items.append({
+                        'category': category_key,
+                        'item_number': i + 1,
+                        'error': str(item_error)
+                    })
                     continue
         
-        return Response({
-            'message': f'🎉 Database populated successfully! Created 6 users and {items_created} realistic items with category-specific images (200 per category)!',
+        # Create response message
+        success_message = f'🎉 Database populated successfully! Created 6 users and {items_created} realistic items'
+        if failed_items:
+            success_message += f' (attempted 1000, {len(failed_items)} failed)'
+        else:
+            success_message += ' (1000 items total, 200 per category)'
+            
+        response_data = {
+            'message': success_message,
             'users_created': 6,
             'items_created': items_created,
+            'items_attempted': 1000,
             'categories': list(categories.keys()),
             'items_per_category': 200,
             'features': [
@@ -380,7 +407,15 @@ def populate_database(request):
                 'Accurate pricing ranges',
                 'Complete data reset on each populate'
             ]
-        })
+        }
+        
+        # Add failed items info if any
+        if failed_items:
+            response_data['failed_items'] = failed_items[:10]  # Show first 10 failures
+            response_data['failed_count'] = len(failed_items)
+            response_data['sample_errors'] = list(set([item['error'] for item in failed_items[:20]]))  # Unique error types
+        
+        return Response(response_data)
         
     except Exception as e:
         return Response({
