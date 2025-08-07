@@ -10,7 +10,6 @@ import Account from "./pages/Account";
 import CartPage from "./pages/CartPage";
 import Category from "./pages/Category";
 import Contact from "./pages/Contact";
-import Dashboard from "./pages/Dashboard-test2";
 import EditItem from "./pages/EditItem";
 import Home from "./pages/Home";
 import ItemDetails from "./pages/ItemDetails";
@@ -38,7 +37,7 @@ function App() {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signup" element={<Signup />} />
                     <Route path="/account" element={<Account />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
+
                     <Route path="/myitems" element={<MyItems />} />
                     <Route path="/edit-item/:id" element={<EditItem />} />
                     <Route path="/purchases" element={<PurchaseHistory />} />

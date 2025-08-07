@@ -16,7 +16,7 @@ import Pagination from "../components/Pagination";
 import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../hooks/useCart";
-// import styles from "./Home.module.scss"; // TODO: Convert Home component to use CSS modules
+// import styles from "./Home.module.scss"; // Convert Home component to use CSS modules
 
 const Home = () => {
   const { t } = useTranslation();

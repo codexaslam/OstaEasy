@@ -42,9 +42,6 @@ const EditItemForm = ({ item, onItemUpdated, onCancel }) => {
 
     try {
       const token = localStorage.getItem("token");
-      console.log("Updating item with ID:", item.id);
-      console.log("Form data:", formData);
-      console.log("API endpoint:", API_ENDPOINTS.ITEM_UPDATE(item.id));
 
       const response = await axios.put(
         API_ENDPOINTS.ITEM_UPDATE(item.id),
@@ -57,18 +54,17 @@ const EditItemForm = ({ item, onItemUpdated, onCancel }) => {
         }
       );
 
-      console.log("Update response:", response.data);
-      onItemUpdated();
-      Swal.fire({
-        title: "Success!",
-        text: "Item updated successfully!",
-        icon: "success",
-        confirmButtonText: "OK",
-        confirmButtonColor: "#0ea5e9",
-      });
+      if (response.data) {
+        onItemUpdated();
+        Swal.fire({
+          title: "Success!",
+          text: "Item updated successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+          confirmButtonColor: "#0ea5e9",
+        });
+      }
     } catch (error) {
-      console.error("Error updating item:", error);
-      console.error("Error response:", error.response);
       const errorMessage =
         error.response?.data?.error ||
         error.response?.data?.detail ||

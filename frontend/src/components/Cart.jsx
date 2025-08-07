@@ -12,11 +12,6 @@ const Cart = ({ items, onUpdate, onClose }) => {
   const [loading, setLoading] = useState(false);
   const [showStripeCheckout, setShowStripeCheckout] = useState(false);
 
-  // Debug logging
-  console.log("Cart component received items:", items);
-  console.log("Items type:", typeof items);
-  console.log("Is array?", Array.isArray(items));
-
   const handleRemoveItem = async (itemId) => {
     try {
       const token = localStorage.getItem("token");
@@ -66,10 +61,8 @@ const Cart = ({ items, onUpdate, onClose }) => {
     try {
       const token = localStorage.getItem("token");
 
-      // Handle mock payment (no paymentIntent provided) or real payment
-      const paymentIntentId = paymentIntent?.id || "mock_payment_intent_id";
-
-      console.log("Processing payment with ID:", paymentIntentId);
+      // Use the real payment intent ID from Stripe
+      const paymentIntentId = paymentIntent.id;
 
       await axios.post(
         API_ENDPOINTS.CART_PAY,

@@ -35,24 +35,6 @@ const StripeCheckout = ({ items, total, onSuccess, onCancel }) => {
           }
         );
 
-        // Check if this is a mock response for development
-        if (
-          response.data.client_secret === "pi_mock_client_secret_for_testing"
-        ) {
-          console.log("Mock payment detected:", response.data.message);
-          setLoading(false);
-          Swal.fire({
-            title: "Demo Mode",
-            text: "This is a demo payment. In production, real Stripe payment would be processed here.",
-            icon: "info",
-            confirmButtonText: "OK",
-          }).then(() => {
-            // Pass a mock payment intent for demo mode
-            onSuccess({ id: "pi_mock_payment_intent_id" });
-          });
-          return;
-        }
-
         setClientSecret(response.data.client_secret);
         setLoading(false);
       } catch (error) {

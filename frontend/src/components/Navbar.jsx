@@ -34,29 +34,15 @@ const Navbar = () => {
     return false;
   };
 
-  const handleCartClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    console.log("Cart button clicked!", {
-      user: !!user,
-      userDetails: user,
-      cartItems: cartItems.length,
-      cartCount,
-      showCart,
-      token: !!localStorage.getItem("token"),
-    });
-
+  const handleCartClick = async () => {
     if (!user) {
       Swal.fire({
-        title: t("common.loginRequired"),
-        text: t("common.pleaseLoginToViewCart"),
+        title: t("auth.loginRequired"),
+        text: t("auth.loginToViewCart"),
         icon: "info",
         showCancelButton: true,
-        confirmButtonColor: "#000",
-        cancelButtonColor: "#666",
-        confirmButtonText: t("navigation.login"),
-        cancelButtonText: t("userActions.cancel"),
+        confirmButtonText: t("auth.login"),
+        cancelButtonText: t("common.cancel"),
       }).then((result) => {
         if (result.isConfirmed) {
           navigate("/login");
@@ -65,12 +51,9 @@ const Navbar = () => {
       return;
     }
 
-    console.log("User is logged in, fetching fresh cart data...");
-    // Force refresh cart data before showing
-    fetchCartItems().then(() => {
-      console.log("Cart data refreshed, showing cart modal");
-      setShowCart(true);
-    });
+    // Fetch fresh cart data and show cart modal
+    await handleCartUpdate();
+    setShowCart(true);
   };
 
   const handleCloseCart = () => {
