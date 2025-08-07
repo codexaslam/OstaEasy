@@ -98,8 +98,14 @@ const Category = () => {
             break;
           case "newest":
           default:
-            params.append("ordering", "-created_at");
+            params.append("ordering", "-date_added");
             break;
+        }
+
+        // Add search if present
+        const searchQuery = searchParams.get("search");
+        if (searchQuery) {
+          params.append("search", searchQuery);
         }
 
         const response = await axios.get(
@@ -113,36 +119,25 @@ const Category = () => {
         setLoading(false);
       }
     },
-    [category, sortBy]
+    [category, sortBy, searchParams]
   );
 
   const applyFilters = useCallback(() => {
     let filtered = [...(items.results || [])];
 
-    // Apply search filter
-    const searchQuery = searchParams.get("search");
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (item) =>
-          item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          item.description?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    // Apply price filter
+    // Only apply client-side price filter since search and sorting are handled server-side
     filtered = filtered.filter(
       (item) => item.price >= priceRange[0] && item.price <= priceRange[1]
     );
 
-    // Note: Sorting is now handled at the API level in fetchItems
     setFilteredItems(filtered);
-  }, [items.results, priceRange, searchParams]);
+  }, [items.results, priceRange]);
 
   useEffect(() => {
-    // Reset to page 1 and fetch when category or sort changes
+    // Reset to page 1 and fetch when category, sort, or search changes
     setCurrentPage(1);
     fetchItems(1);
-  }, [category, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [category, sortBy, searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     applyFilters();
@@ -221,7 +216,7 @@ const Category = () => {
                 Filter
               </button>
               <span className="category-page__results-count">
-                {filteredItems.length} products found
+                {items.count || 0} products found
               </span>
             </div>
             <div className="category-page__toolbar-right">
@@ -301,9 +296,13 @@ const Category = () => {
                       min="0"
                       max="1000"
                       value={priceRange[0]}
-                      onChange={(e) =>
-                        setPriceRange([parseInt(e.target.value), priceRange[1]])
-                      }
+                      onChange={(e) => {
+                        const newRange = [
+                          parseInt(e.target.value),
+                          priceRange[1],
+                        ];
+                        setPriceRange(newRange);
+                      }}
                       className="category-page__price-slider"
                     />
                     <input
@@ -311,9 +310,13 @@ const Category = () => {
                       min="0"
                       max="1000"
                       value={priceRange[1]}
-                      onChange={(e) =>
-                        setPriceRange([priceRange[0], parseInt(e.target.value)])
-                      }
+                      onChange={(e) => {
+                        const newRange = [
+                          priceRange[0],
+                          parseInt(e.target.value),
+                        ];
+                        setPriceRange(newRange);
+                      }}
                       className="category-page__price-slider"
                     />
                     <div className="category-page__price-values">
