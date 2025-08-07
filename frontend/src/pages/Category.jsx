@@ -7,6 +7,7 @@ import {
 } from "react-icons/lia";
 import { useParams, useSearchParams } from "react-router-dom";
 import ItemCard from "../components/ItemCard";
+import Pagination from "../components/Pagination";
 import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../hooks/useCart";
 
@@ -15,7 +16,12 @@ const Category = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { addToCart } = useCart();
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState({
+    results: [],
+    count: 0,
+    next: null,
+    previous: null,
+  });
   const [filteredItems, setFilteredItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState("grid");
@@ -23,6 +29,7 @@ const Category = () => {
   const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const categories = {
     clothing: {
@@ -65,25 +72,52 @@ const Category = () => {
       "https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
   };
 
-  const fetchItems = useCallback(async () => {
-    try {
-      setLoading(true);
-      const categoryParam =
-        category && category !== "all" ? `?category=${category}` : "";
-      const response = await axios.get(
-        `http://localhost:8000/api/shop/items/${categoryParam}`
-      );
-      const categoryItems = response.data.results || response.data;
-      setItems(categoryItems);
-    } catch (error) {
-      console.error("Error fetching items:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, [category]);
+  const fetchItems = useCallback(
+    async (page = 1) => {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams();
+
+        if (category && category !== "all") {
+          params.append("category", category);
+        }
+
+        // Add pagination
+        params.append("page", page.toString());
+
+        // Add sorting
+        switch (sortBy) {
+          case "price-low":
+            params.append("ordering", "price");
+            break;
+          case "price-high":
+            params.append("ordering", "-price");
+            break;
+          case "name":
+            params.append("ordering", "title");
+            break;
+          case "newest":
+          default:
+            params.append("ordering", "-created_at");
+            break;
+        }
+
+        const response = await axios.get(
+          `http://localhost:8000/api/shop/items/?${params.toString()}`
+        );
+        setItems(response.data);
+        setCurrentPage(page);
+      } catch (error) {
+        console.error("Error fetching items:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [category, sortBy]
+  );
 
   const applyFilters = useCallback(() => {
-    let filtered = [...items];
+    let filtered = [...(items.results || [])];
 
     // Apply search filter
     const searchQuery = searchParams.get("search");
@@ -100,35 +134,31 @@ const Category = () => {
       (item) => item.price >= priceRange[0] && item.price <= priceRange[1]
     );
 
-    // Apply sorting
-    switch (sortBy) {
-      case "price-low":
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case "price-high":
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case "name":
-        filtered.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      case "newest":
-      default:
-        filtered.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
-        break;
-    }
-
+    // Note: Sorting is now handled at the API level in fetchItems
     setFilteredItems(filtered);
-  }, [items, sortBy, priceRange, searchParams]);
+  }, [items.results, priceRange, searchParams]);
 
   useEffect(() => {
-    fetchItems();
-  }, [fetchItems]);
+    // Reset to page 1 and fetch when category or sort changes
+    setCurrentPage(1);
+    fetchItems(1);
+  }, [category, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     applyFilters();
   }, [applyFilters]);
+
+  // Handle page changes
+  const handlePageChange = (page) => {
+    fetchItems(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Handle sort changes
+  const handleSortChange = (newSortBy) => {
+    setSortBy(newSortBy);
+    setCurrentPage(1);
+  };
 
   const handleAddToCart = async (itemId) => {
     try {
@@ -197,7 +227,7 @@ const Category = () => {
             <div className="category-page__toolbar-right">
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => handleSortChange(e.target.value)}
                 className="category-page__sort-select"
               >
                 <option value="newest">Sort by: Newest</option>
@@ -297,39 +327,54 @@ const Category = () => {
 
             {/* Products Grid */}
             <div className="category-page__main">
-              {filteredItems.length === 0 ? (
+              {filteredItems.length === 0 && !loading ? (
                 <div className="category-page__empty">
                   <h3>No products found</h3>
                   <p>Try adjusting your filters or search terms</p>
                 </div>
               ) : (
-                <div
-                  className={`category-page__products ${
-                    viewMode === "list" ? "category-page__products--list" : ""
-                  } ${
-                    gridColumns === 1 && viewMode === "grid"
-                      ? "category-page__products--single"
-                      : ""
-                  }`}
-                  style={
-                    viewMode === "grid"
-                      ? {
-                          "--grid-columns": gridColumns,
-                          gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
+                <>
+                  <div
+                    className={`category-page__products ${
+                      viewMode === "list" ? "category-page__products--list" : ""
+                    } ${
+                      gridColumns === 1 && viewMode === "grid"
+                        ? "category-page__products--single"
+                        : ""
+                    }`}
+                    style={
+                      viewMode === "grid"
+                        ? {
+                            "--grid-columns": gridColumns,
+                            gridTemplateColumns: `repeat(${gridColumns}, 1fr)`,
+                          }
+                        : {}
+                    }
+                  >
+                    {filteredItems.map((item) => (
+                      <ItemCard
+                        key={item.id}
+                        item={item}
+                        onAddToCart={handleAddToCart}
+                        currentUser={user}
+                        showDescription={
+                          gridColumns === 1 && viewMode === "grid"
                         }
-                      : {}
-                  }
-                >
-                  {filteredItems.map((item) => (
-                    <ItemCard
-                      key={item.id}
-                      item={item}
-                      onAddToCart={handleAddToCart}
-                      currentUser={user}
-                      showDescription={gridColumns === 1 && viewMode === "grid"}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Pagination */}
+                  {items.count > 20 && (
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={Math.ceil(items.count / 20)}
+                      onPageChange={handlePageChange}
+                      totalItems={items.count}
+                      itemsPerPage={20}
                     />
-                  ))}
-                </div>
+                  )}
+                </>
               )}
             </div>
           </div>

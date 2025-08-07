@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 import AddItemForm from "../components/AddItemForm";
 import Cart from "../components/Cart";
 import ItemCard from "../components/ItemCard";
+import Pagination from "../components/Pagination";
 import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../hooks/useCart";
@@ -29,6 +30,24 @@ const Home = () => {
   const [showCart, setShowCart] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  // Pagination states
+  const [featuredPage, setFeaturedPage] = useState(1);
+  const [bestSellersPage, setBestSellersPage] = useState(1);
+  const [featuredItems, setFeaturedItems] = useState({
+    results: [],
+    count: 0,
+    next: null,
+    previous: null,
+  });
+  const [bestSellerItems, setBestSellerItems] = useState({
+    results: [],
+    count: 0,
+    next: null,
+    previous: null,
+  });
+  const [featuredLoading, setFeaturedLoading] = useState(false);
+  const [bestSellersLoading, setBestSellersLoading] = useState(false);
 
   const heroSlides = [
     {
@@ -158,7 +177,13 @@ const Home = () => {
 
   useEffect(() => {
     const searchQuery = searchParams.get("search");
-    fetchItems(searchQuery);
+    if (searchQuery) {
+      fetchItems(searchQuery);
+    } else {
+      // Load initial data for homepage sections
+      fetchFeaturedItems(1);
+      fetchBestSellers(1);
+    }
   }, [user, searchParams]);
 
   useEffect(() => {
@@ -193,6 +218,45 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchFeaturedItems = async (page = 1) => {
+    try {
+      setFeaturedLoading(true);
+      const response = await axios.get(
+        `${API_ENDPOINTS.ITEMS}?page=${page}&ordering=-created_at&section=featured`
+      );
+      setFeaturedItems(response.data);
+      setFeaturedPage(page);
+    } catch (error) {
+      console.error("Error fetching featured items:", error);
+    } finally {
+      setFeaturedLoading(false);
+    }
+  };
+
+  const fetchBestSellers = async (page = 1) => {
+    try {
+      setBestSellersLoading(true);
+      const response = await axios.get(
+        `${API_ENDPOINTS.ITEMS}?page=${page}&ordering=-price&section=bestsellers`
+      );
+      setBestSellerItems(response.data);
+      setBestSellersPage(page);
+    } catch (error) {
+      console.error("Error fetching best sellers:", error);
+    } finally {
+      setBestSellersLoading(false);
+    }
+  };
+
+  // Separate handlers for pagination to prevent interference
+  const handleFeaturedPageChange = (page) => {
+    fetchFeaturedItems(page);
+  };
+
+  const handleBestSellersPageChange = (page) => {
+    fetchBestSellers(page);
   };
 
   const handleAddToCart = async (itemId) => {
@@ -256,10 +320,7 @@ const Home = () => {
     });
   };
 
-  const featuredItems = items.slice(0, 8);
-  const bestSellerItems = items.slice(8, 16);
-
-  if (loading) {
+  if (loading && searchParams.get("search")) {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
@@ -327,23 +388,46 @@ const Home = () => {
         <div className="container">
           <div className="section-header">
             <h2>Discovery all new items</h2>
-            <p>Best Seller</p>
+            <p>Explore our latest arrivals</p>
+            <Link to="/category/all?sort=newest" className="view-all-link">
+              View All New Items →
+            </Link>
           </div>
-          <div className="products-grid">
-            {featuredItems.map((item) => (
-              <ItemCard
-                key={item.id}
-                item={item}
-                onAddToCart={handleAddToCart}
-                currentUser={user}
-              />
-            ))}
-          </div>
+
+          {featuredLoading ? (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+              <p>Loading featured items...</p>
+            </div>
+          ) : (
+            <>
+              <div className="products-grid">
+                {featuredItems.results?.map((item) => (
+                  <ItemCard
+                    key={item.id}
+                    item={item}
+                    onAddToCart={handleAddToCart}
+                    currentUser={user}
+                  />
+                ))}
+              </div>
+
+              {featuredItems.count > 20 && (
+                <Pagination
+                  currentPage={featuredPage}
+                  totalPages={Math.ceil(featuredItems.count / 20)}
+                  onPageChange={handleFeaturedPageChange}
+                  totalItems={featuredItems.count}
+                  itemsPerPage={20}
+                />
+              )}
+            </>
+          )}
         </div>
       </section>
 
       {/* Best Sellers */}
-      {bestSellerItems.length > 0 && (
+      {!searchParams.get("search") && (
         <section className="bestsellers-section">
           <div className="container">
             <div className="section-header">
@@ -352,17 +436,40 @@ const Home = () => {
                 Shop the Latest Styles: Stay ahead of the curve with our newest
                 arrivals
               </p>
+              <Link to="/category/all?sort=popular" className="view-all-link">
+                View All Best Sellers →
+              </Link>
             </div>
-            <div className="products-grid">
-              {bestSellerItems.map((item) => (
-                <ItemCard
-                  key={item.id}
-                  item={item}
-                  onAddToCart={handleAddToCart}
-                  currentUser={user}
-                />
-              ))}
-            </div>
+
+            {bestSellersLoading ? (
+              <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Loading best sellers...</p>
+              </div>
+            ) : (
+              <>
+                <div className="products-grid">
+                  {bestSellerItems.results?.map((item) => (
+                    <ItemCard
+                      key={item.id}
+                      item={item}
+                      onAddToCart={handleAddToCart}
+                      currentUser={user}
+                    />
+                  ))}
+                </div>
+
+                {bestSellerItems.count > 20 && (
+                  <Pagination
+                    currentPage={bestSellersPage}
+                    totalPages={Math.ceil(bestSellerItems.count / 20)}
+                    onPageChange={handleBestSellersPageChange}
+                    totalItems={bestSellerItems.count}
+                    itemsPerPage={20}
+                  />
+                )}
+              </>
+            )}
           </div>
         </section>
       )}
