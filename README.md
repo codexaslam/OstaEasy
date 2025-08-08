@@ -348,6 +348,9 @@ To test the complete checkout flow with Stripe integration:
    - **Currency Testing**: Change currency and verify price conversions
 
 4. **Real-time Features:**
+
    - Add items to cart and watch the cart count update immediately
    - Remove items and see instant updates
    - No page refresh needed for cart operations
+
+5.
