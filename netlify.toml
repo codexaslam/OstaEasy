@@ -1,6 +1,6 @@
 [build]
-  # Build command (since base is already set to frontend in Netlify dashboard)
-  command = "npm install && npm run build"
+  # Build command using pnpm
+  command = "npm install -g pnpm && pnpm install && pnpm build"
   
   # Directory that contains the deploy-ready HTML files and assets
   publish = "dist"
