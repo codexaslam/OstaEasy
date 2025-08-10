@@ -126,12 +126,14 @@ def populate_database(request):
                 }
             }
             
-            # Create 50 items for each category (250 total items) using bulk_create for performance
+            # Create 200 items for each category (1000 total items) using optimized bulk_create
             items_to_create = []
             items_created = 0
+            BATCH_SIZE = 50  # Smaller batches for better performance
             
             for category_key, category_data in categories.items():
-                for i in range(50):  # Reduced from 200 to 50 items per category
+                category_items = []
+                for i in range(200):  # Increased to 200 items per category
                     try:
                         # Randomly select an item from the category
                         base_item = random.choice(category_data['items'])
@@ -168,20 +170,20 @@ def populate_database(request):
                             seller=seller,
                             image_url=image_url
                         )
-                        items_to_create.append(item)
+                        category_items.append(item)
                         items_created += 1
+                        
+                        # Batch create every 50 items for better memory management
+                        if len(category_items) >= BATCH_SIZE:
+                            Item.objects.bulk_create(category_items, batch_size=BATCH_SIZE)
+                            category_items = []
                         
                     except Exception as item_error:
                         continue
                 
-                # Bulk create items for this category
-                if items_to_create:
-                    Item.objects.bulk_create(items_to_create, batch_size=100)
-                    items_to_create = []  # Reset for next category
-            
-            # Create any remaining items
-            if items_to_create:
-                Item.objects.bulk_create(items_to_create, batch_size=100)
+                # Create any remaining items for this category
+                if category_items:
+                    Item.objects.bulk_create(category_items, batch_size=BATCH_SIZE)
         
         # Create response message
         success_message = f'🎉 Database populated successfully! Created 6 users and {items_created} items'
@@ -193,10 +195,10 @@ def populate_database(request):
             'categories': list(categories.keys()),
             'items_per_category': 50,
             'optimizations': [
-                'Used bulk_create for better performance',
-                'Reduced item count for faster processing',
+                'Used optimized bulk_create with smaller batches',
+                'Memory-efficient batch processing (50 items per batch)',
                 'Transaction-wrapped for data consistency',
-                'Simplified data generation'
+                'Simplified data generation for faster processing'
             ]
         }
         
