@@ -1,0 +1,31 @@
+[build]
+  # Build command (since base is already set to frontend in Netlify dashboard)
+  command = "npm install && npm run build"
+  
+  # Directory that contains the deploy-ready HTML files and assets
+  publish = "dist"
+
+[build.environment]
+  # Use Node.js 18 or higher
+  NODE_VERSION = "18"
+
+# Redirect rules for React Router
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Production environment variables
+[context.production.environment]
+  VITE_API_BASE_URL = "https://ostaeasy.onrender.com"
+  VITE_STRIPE_PUBLISHABLE_KEY = "pk_test_01QZ55AeQfGutsrsRjjkToqz"
+  VITE_DEBUG = "false"
+  VITE_ENVIRONMENT = "production"
+  VITE_FRONTEND_URL = "https://ostaeasy.netlify.app"
+
+# Deploy preview environment (for testing branches)
+[context.deploy-preview.environment]
+  VITE_API_BASE_URL = "https://ostaeasy.onrender.com"
+  VITE_STRIPE_PUBLISHABLE_KEY = "pk_test_01QZ55AeQfGutsrsRjjkToqz"
+  VITE_DEBUG = "true"
+  VITE_ENVIRONMENT = "staging"
