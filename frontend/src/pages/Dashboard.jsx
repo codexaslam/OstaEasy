@@ -1,15 +1,16 @@
 import axios from "axios";
 import {
+  Activity,
   BarChart3,
+  Calendar,
   DollarSign,
   Package,
   ShoppingCart,
   TrendingUp,
   Users,
-  Calendar,
-  Activity
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
 import { useCurrency } from "../contexts/CurrencyContext";
 import { formatDualCurrency } from "../utils/currency";
@@ -25,7 +26,7 @@ const Dashboard = () => {
     daily_sales: [],
     price_distribution: [],
     user_stats: {},
-    daily_registrations: []
+    daily_registrations: [],
   });
 
   useEffect(() => {
@@ -41,15 +42,15 @@ const Dashboard = () => {
       const headers = { Authorization: `Bearer ${token}` };
 
       const [overviewRes, salesRes, usersRes] = await Promise.all([
-        axios.get("http://localhost:8000/api/analytics/overview/", { headers }),
-        axios.get("http://localhost:8000/api/analytics/sales/", { headers }),
-        axios.get("http://localhost:8000/api/analytics/users/", { headers })
+        axios.get(API_ENDPOINTS.ANALYTICS_OVERVIEW, { headers }),
+        axios.get(API_ENDPOINTS.ANALYTICS_SALES, { headers }),
+        axios.get(API_ENDPOINTS.ANALYTICS_USERS, { headers }),
       ]);
 
       setAnalytics({
         ...overviewRes.data,
         ...salesRes.data,
-        ...usersRes.data
+        ...usersRes.data,
       });
     } catch (error) {
       console.error("Error fetching analytics:", error);
@@ -171,7 +172,9 @@ const Dashboard = () => {
                 <div key={index} className="category-item">
                   <div className="category-header">
                     <h4 className="category-name">{category.category}</h4>
-                    <span className="category-count">{category.count} items</span>
+                    <span className="category-count">
+                      {category.count} items
+                    </span>
                   </div>
                   <div className="category-stats">
                     <div className="stat">
@@ -187,17 +190,22 @@ const Dashboard = () => {
                     <div className="stat">
                       <span className="stat-label">Success Rate:</span>
                       <span className="stat-value">
-                        {category.count > 0 
+                        {category.count > 0
                           ? Math.round((category.sold / category.count) * 100)
-                          : 0}%
+                          : 0}
+                        %
                       </span>
                     </div>
                   </div>
                   <div className="category-progress">
-                    <div 
+                    <div
                       className="progress-bar"
                       style={{
-                        width: `${category.count > 0 ? (category.sold / category.count) * 100 : 0}%`
+                        width: `${
+                          category.count > 0
+                            ? (category.sold / category.count) * 100
+                            : 0
+                        }%`,
                       }}
                     ></div>
                   </div>
@@ -225,7 +233,8 @@ const Dashboard = () => {
                   <div className="seller-info">
                     <h4 className="seller-name">{seller.username}</h4>
                     <p className="seller-stats">
-                      {seller.items_sold} items sold • {formatDualCurrency(seller.revenue, currency)} revenue
+                      {seller.items_sold} items sold •{" "}
+                      {formatDualCurrency(seller.revenue, currency)} revenue
                     </p>
                   </div>
                   <div className="seller-badge">
@@ -262,25 +271,29 @@ const Dashboard = () => {
                   <p className="activity-subtitle">users joined</p>
                 </div>
               </div>
-              
+
               <div className="activity-item">
                 <div className="activity-icon activity-icon--items">
                   <Package className="h-5 w-5" />
                 </div>
                 <div className="activity-content">
                   <h4 className="activity-title">New Listings</h4>
-                  <p className="activity-value">{overview.recent_listings || 0}</p>
+                  <p className="activity-value">
+                    {overview.recent_listings || 0}
+                  </p>
                   <p className="activity-subtitle">items listed</p>
                 </div>
               </div>
-              
+
               <div className="activity-item">
                 <div className="activity-icon activity-icon--sales">
                   <ShoppingCart className="h-5 w-5" />
                 </div>
                 <div className="activity-content">
                   <h4 className="activity-title">Sales Made</h4>
-                  <p className="activity-value">{overview.recent_purchases || 0}</p>
+                  <p className="activity-value">
+                    {overview.recent_purchases || 0}
+                  </p>
                   <p className="activity-subtitle">items sold</p>
                 </div>
               </div>
@@ -291,7 +304,7 @@ const Dashboard = () => {
 
       {/* Refresh Button */}
       <div className="dashboard-actions">
-        <button 
+        <button
           onClick={fetchAnalytics}
           disabled={loading}
           className="refresh-btn"

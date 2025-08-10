@@ -33,7 +33,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Purchase
-        fields = ['id', 'buyer', 'item', 'purchase_date', 'purchase_price']
+        fields = ['id', 'buyer', 'item', 'purchase_date', 'purchase_price', 'payment_intent_id']
         read_only_fields = ['buyer', 'purchase_date']
 
 

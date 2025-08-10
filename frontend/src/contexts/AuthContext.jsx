@@ -46,13 +46,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/users/token",
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axios.post(API_ENDPOINTS.LOGIN, {
+        username,
+        password,
+      });
 
       const { access } = response.data;
       localStorage.setItem("token", access);
@@ -71,10 +68,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (userData) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/users/signup",
-        userData
-      );
+      const response = await axios.post(API_ENDPOINTS.SIGNUP, userData);
       return { success: true, data: response.data };
     } catch (error) {
       console.error("Signup error:", error);
@@ -93,13 +87,10 @@ export const AuthProvider = ({ children }) => {
 
   const changePassword = async (oldPassword, newPassword) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/users/change-password",
-        {
-          old_password: oldPassword,
-          new_password: newPassword,
-        }
-      );
+      const response = await axios.post(API_ENDPOINTS.CHANGE_PASSWORD, {
+        old_password: oldPassword,
+        new_password: newPassword,
+      });
       return { success: true, message: response.data.message };
     } catch (error) {
       return {

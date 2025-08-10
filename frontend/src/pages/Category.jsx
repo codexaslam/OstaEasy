@@ -8,6 +8,7 @@ import {
 import { useParams, useSearchParams } from "react-router-dom";
 import ItemCard from "../components/ItemCard";
 import Pagination from "../components/Pagination";
+import { API_ENDPOINTS } from "../config/api";
 import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../hooks/useCart";
 
@@ -109,7 +110,7 @@ const Category = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:8000/api/shop/items/?${params.toString()}`
+          `${API_ENDPOINTS.ITEMS}?${params.toString()}`
         );
         setItems(response.data);
         setCurrentPage(page);

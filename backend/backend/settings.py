@@ -10,12 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Environment Detection
+ENVIRONMENT = config('ENVIRONMENT', default='development')
+IS_DEVELOPMENT = ENVIRONMENT == 'development'
+IS_PRODUCTION = ENVIRONMENT == 'production'
+
+# Debug Info (only in development)
+if IS_DEVELOPMENT:
+    print(f"🔧 Django Environment: {ENVIRONMENT}")
+    print(f"🔧 Base Directory: {BASE_DIR}")
+    if (BASE_DIR / '.env.local').exists():
+        print("🔧 Using .env.local for local development")
+    else:
+        print("🔧 Using default .env file")
 
 
 # Quick-start development settings - unsuitable for production
@@ -128,30 +143,54 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
-# Database
+# Database Configuration - Environment Aware
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# Default database configuration (SQLite for development)
-DATABASES = {
-    'default': {
-        'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': BASE_DIR / config('DB_NAME', default='db.sqlite3'),
-        'USER': config('DB_USER', default=''),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default=''),
-        'PORT': config('DB_PORT', default=''),
-    }
-}
-
-# Override with DATABASE_URL if present (for production deployment on Render)
+# Check for DATABASE_URL first (used by Render, Heroku, etc.)
 database_url = config('DATABASE_URL', default='')
+
 if database_url:
+    # Production: Use DATABASE_URL (PostgreSQL on Render/Heroku)
     try:
         import dj_database_url
-        DATABASES['default'] = dj_database_url.parse(database_url)
+        DATABASES = {
+            'default': dj_database_url.parse(database_url)
+        }
+        if IS_DEVELOPMENT:
+            print("🔧 Using DATABASE_URL for database connection")
     except ImportError:
-        # dj_database_url not available
-        pass
+        print("⚠️  dj_database_url not available, falling back to manual config")
+        # Fallback to manual configuration
+        DATABASES = {
+            'default': {
+                'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
+                'NAME': config('DB_NAME', default='aa_webshop'),
+                'USER': config('DB_USER', default=''),
+                'PASSWORD': config('DB_PASSWORD', default=''),
+                'HOST': config('DB_HOST', default='localhost'),
+                'PORT': config('DB_PORT', default='5432'),
+            }
+        }
+else:
+    # Development/Local: Use SQLite or manual PostgreSQL config
+    DATABASES = {
+        'default': {
+            'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
+            'NAME': BASE_DIR / config('DB_NAME', default='db.sqlite3'),
+            'USER': config('DB_USER', default=''),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': config('DB_HOST', default=''),
+            'PORT': config('DB_PORT', default=''),
+        }
+    }
+    
+    # If using PostgreSQL locally, adjust the NAME field
+    if config('DB_ENGINE', default='').startswith('django.db.backends.postgresql'):
+        DATABASES['default']['NAME'] = config('DB_NAME', default='aa_webshop_local')
+        if IS_DEVELOPMENT:
+            print(f"🔧 Using local PostgreSQL database: {DATABASES['default']['NAME']}")
+    elif IS_DEVELOPMENT:
+        print(f"🔧 Using SQLite database: {DATABASES['default']['NAME']}")
 
 
 # Password validation
@@ -215,15 +254,35 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS settings
+# CORS settings - Environment aware
 CORS_ALLOWED_ORIGINS = [
     config('FRONTEND_URL', default='http://localhost:5173'),
     config('FRONTEND_URL_ALT', default='http://127.0.0.1:5173'),
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
 ]
 
-CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', default=True, cast=bool)  # For development only
+# Add common development URLs
+if IS_DEVELOPMENT:
+    CORS_ALLOWED_ORIGINS.extend([
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ])
+
+# Production CORS settings
+if IS_PRODUCTION:
+    CORS_ALLOW_ALL_ORIGINS = False
+    # Production frontend URLs
+    production_urls = [
+        "https://ostaeasy.netlify.app",
+        "https://ostaeasy.netlify.app/",  # With trailing slash
+        config('FRONTEND_URL', default='https://ostaeasy.netlify.app'),
+    ]
+    CORS_ALLOWED_ORIGINS.extend(production_urls)
+else:
+    # Development: Allow all origins for easier testing
+    CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', default=True, cast=bool)
+
 CORS_ALLOW_CREDENTIALS = True
 
 # Stripe settings

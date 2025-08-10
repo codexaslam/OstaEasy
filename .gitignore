@@ -4,9 +4,9 @@ env/
 .venv/
 
 # Environment Variables
-.env
-.env.local
-.env.production
+# .env
+# .env.local
+# .env.production
 
 # Django
 __pycache__/

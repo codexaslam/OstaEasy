@@ -26,9 +26,21 @@ const MyItems = () => {
   const fetchMyItems = async () => {
     try {
       const response = await axios.get(API_ENDPOINTS.MY_ITEMS);
-      setItems(response.data);
+      // Ensure we have the expected structure
+      const data = response.data || {};
+      setItems({
+        on_sale: data.on_sale || [],
+        sold: data.sold || [],
+        purchased: data.purchased || [],
+      });
     } catch (error) {
       console.error("Error fetching items:", error);
+      // Set empty arrays on error to prevent undefined errors
+      setItems({
+        on_sale: [],
+        sold: [],
+        purchased: [],
+      });
     } finally {
       setLoading(false);
     }
@@ -58,7 +70,10 @@ const MyItems = () => {
   }
 
   const renderItems = (itemsList, type) => {
-    if (itemsList.length === 0) {
+    // Safety check to ensure itemsList is an array
+    const safeItemsList = Array.isArray(itemsList) ? itemsList : [];
+
+    if (safeItemsList.length === 0) {
       return (
         <div className="no-items">
           <p>{t("myItems.noItems")}</p>
@@ -68,38 +83,63 @@ const MyItems = () => {
 
     return (
       <div className="items-grid">
-        {itemsList.map((item) => (
-          <div key={item.id} className="my-item-wrapper">
-            <ItemCard
-              item={item}
-              currentUser={user}
-              onAddToCart={() => {}} // Disable add to cart for own items
-              isMyItem={type === "on_sale"}
-            />
+        {safeItemsList.map((item) => {
+          // Handle different data structures for purchased vs on_sale/sold items
+          const actualItem = type === "purchased" ? item.item : item;
+          const purchaseInfo = type === "purchased" ? item : null;
 
-            {/* Additional info specific to MyItems */}
-            <div className="my-item-details">
-              <div className="item-meta">
-                <span className="item-date">
-                  Added: {formatDate(item.date_added)}
-                </span>
-                {item.date_sold && (
-                  <span className="item-date">
-                    Sold: {formatDate(item.date_sold)}
-                  </span>
-                )}
-                {item.buyer && (
-                  <span className="item-buyer-seller">
-                    {type === "purchased" ? "Seller" : "Buyer"}:{" "}
-                    {type === "purchased"
-                      ? item.seller.username
-                      : item.buyer.username}
-                  </span>
-                )}
+          return (
+            <div
+              key={type === "purchased" ? item.id : item.id}
+              className="my-item-wrapper"
+            >
+              <ItemCard
+                item={actualItem}
+                currentUser={user}
+                onAddToCart={() => {}} // Disable add to cart for own items
+                isMyItem={type === "on_sale" || type === "sold"}
+                hideActions={type === "purchased"}
+              />
+
+              {/* Additional info specific to MyItems */}
+              <div className="my-item-details">
+                <div className="item-meta">
+                  {type === "purchased" ? (
+                    <>
+                      <span className="item-date">
+                        Purchased: {formatDate(purchaseInfo.purchase_date)}
+                      </span>
+                      <span className="item-price">
+                        Price: €{purchaseInfo.purchase_price}
+                      </span>
+                      {actualItem.seller && (
+                        <span className="item-buyer-seller">
+                          Seller: {actualItem.seller.username}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <span className="item-date">
+                        Added: {formatDate(actualItem.date_added)}
+                      </span>
+                      {actualItem.date_sold && (
+                        <span className="item-date">
+                          Sold: {formatDate(actualItem.date_sold)}
+                        </span>
+                      )}
+                      {actualItem.buyer && (
+                        <span className="item-buyer-seller">
+                          Buyer: {actualItem.buyer.username}
+                        </span>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     );
   };
@@ -110,12 +150,12 @@ const MyItems = () => {
         <h1>{t("myItems.myItems")}</h1>
         <div className="stats">
           <span>
-            {t("itemCard.onSale")}: {items.on_sale.length}
+            {t("itemCard.onSale")}: {(items.on_sale || []).length}
           </span>
           <span>
-            {t("myItems.sold")}: {items.sold.length}
+            {t("myItems.sold")}: {(items.sold || []).length}
           </span>
-          <span>Purchased: {items.purchased.length}</span>
+          <span>Purchased: {(items.purchased || []).length}</span>
         </div>
       </div>
 
@@ -130,19 +170,19 @@ const MyItems = () => {
           className={`tab ${activeTab === "on_sale" ? "active" : ""}`}
           onClick={() => setActiveTab("on_sale")}
         >
-          {t("itemCard.onSale")} ({items.on_sale.length})
+          {t("itemCard.onSale")} ({(items.on_sale || []).length})
         </button>
         <button
           className={`tab ${activeTab === "sold" ? "active" : ""}`}
           onClick={() => setActiveTab("sold")}
         >
-          {t("myItems.sold")} ({items.sold.length})
+          {t("myItems.sold")} ({(items.sold || []).length})
         </button>
         <button
           className={`tab ${activeTab === "purchased" ? "active" : ""}`}
           onClick={() => setActiveTab("purchased")}
         >
-          Purchased ({items.purchased.length})
+          Purchased ({(items.purchased || []).length})
         </button>
       </div>
 

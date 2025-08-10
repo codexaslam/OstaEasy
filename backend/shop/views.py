@@ -6,16 +6,114 @@ from django.http import JsonResponse
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics, filters
+from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from decimal import Decimal
 import stripe
 import json
 from .models import Item, CartItem, Purchase
+from .serializers import ItemSerializer, ItemCreateSerializer, PurchaseSerializer, CartItemSerializer
 
 # Configure Stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
+
+
+class ItemPagination(PageNumberPagination):
+    page_size = 12
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
+
+class ItemListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Item.objects.filter(status='on_sale').order_by('-date_added')
+    serializer_class = ItemSerializer
+    permission_classes = [AllowAny]
+    pagination_class = ItemPagination
+    filter_backends = [filters.OrderingFilter, filters.SearchFilter]
+    ordering_fields = ['date_added', 'price', 'title']
+    ordering = ['-date_added']
+    search_fields = ['title', 'description']
+    
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ItemCreateSerializer
+        return ItemSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save(seller=self.request.user)
+    
+    def get_queryset(self):
+        queryset = Item.objects.filter(status='on_sale')
+        category = self.request.query_params.get('category')
+        if category:
+            queryset = queryset.filter(category=category)
+        return queryset.order_by('-date_added')
+
+
+class ItemDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    permission_classes = [AllowAny]
+    
+    def get_permissions(self):
+        if self.request.method in ['PUT', 'PATCH', 'DELETE']:
+            return [IsAuthenticated()]
+        return [AllowAny()]
+
+
+class MyItemsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        user = request.user
+        
+        # Items user is selling (on sale)
+        on_sale_items = Item.objects.filter(
+            seller=user, 
+            status='on_sale'
+        ).order_by('-date_added')
+        
+        # Items user has sold
+        sold_items = Item.objects.filter(
+            seller=user, 
+            status='sold'
+        ).order_by('-date_added')
+        
+        # Items user has purchased
+        purchased_items = Purchase.objects.filter(
+            buyer=user
+        ).select_related('item').order_by('-purchase_date')
+        
+        # Serialize the data
+        on_sale_serializer = ItemSerializer(on_sale_items, many=True)
+        sold_serializer = ItemSerializer(sold_items, many=True)
+        purchased_serializer = PurchaseSerializer(purchased_items, many=True)
+        
+        return Response({
+            'on_sale': on_sale_serializer.data,
+            'sold': sold_serializer.data,
+            'purchased': purchased_serializer.data
+        })
+
+
+class PurchaseHistoryAPIView(generics.ListAPIView):
+    serializer_class = PurchaseSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = ItemPagination
+    
+    def get_queryset(self):
+        return Purchase.objects.filter(buyer=self.request.user).order_by('-purchase_date')
+
+
+class CartAPIView(generics.ListAPIView):
+    serializer_class = CartItemSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return CartItem.objects.filter(user=self.request.user)
 
 
 class ItemListView(ListView):

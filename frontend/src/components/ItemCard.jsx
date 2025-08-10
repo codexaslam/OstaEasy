@@ -17,6 +17,7 @@ const ItemCard = ({
   currentUser,
   showDescription = false,
   isMyItem = false,
+  hideActions = false,
 }) => {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -189,7 +190,7 @@ const ItemCard = ({
         </div>
 
         <div className={styles.actions}>
-          {isMyItem ? (
+          {hideActions ? null : isMyItem ? (
             <button
               onClick={(e) => {
                 e.stopPropagation();
