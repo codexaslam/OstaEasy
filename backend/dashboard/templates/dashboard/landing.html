@@ -138,17 +138,59 @@
       </div>
 
       <div class="populate-section">
-        <h3>Database Population (For Grading)</h3>
-        <p>Click the button below to populate the database with test data:</p>
-        <p>
-          <strong
-            >This will create 6 test users and 1000 demo items (200 items per
-            category)!</strong
+        <h3>Database Population (For Testing)</h3>
+        <p>Choose your testing approach:</p>
+
+        <div
+          style="
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+            border-left: 4px solid #2196f3;
+          "
+        >
+          <h4 style="margin-top: 0; color: #1976d2">
+            🚀 Quick Sample Data (Recommended for Testing)
+          </h4>
+          <p style="margin-bottom: 10px">
+            Creates <strong>3 test users and 10 sample items</strong> - perfect
+            for quick testing!
+          </p>
+          <button
+            class="button secondary"
+            onclick="populateSampleData()"
+            style="background-color: #2196f3"
           >
-        </p>
-        <button class="button secondary" onclick="populateDatabase()">
-          Populate Database
-        </button>
+            Create Sample Data (Quick)
+          </button>
+        </div>
+
+        <div
+          style="
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff3e0;
+            border-radius: 8px;
+            border-left: 4px solid #ff9800;
+          "
+        >
+          <h4 style="margin-top: 0; color: #f57c00">
+            📊 Full Database Population (For Grading)
+          </h4>
+          <p style="margin-bottom: 10px">
+            Creates <strong>6 test users and 250 demo items</strong> (50 items
+            per category) - optimized for performance!
+          </p>
+          <button
+            class="button secondary"
+            onclick="populateDatabase()"
+            style="background-color: #ff9800"
+          >
+            Populate Full Database
+          </button>
+        </div>
+
         <div id="message" class="message"></div>
       </div>
 
@@ -158,42 +200,60 @@
           After populating the database, you can use these credentials to log
           in:
         </p>
-        <ul>
-          <li>
-            <strong>Username:</strong> testuser1,
-            <strong>Password:</strong> pass1
-          </li>
-          <li>
-            <strong>Username:</strong> testuser2,
-            <strong>Password:</strong> pass2
-          </li>
-          <li>
-            <strong>Username:</strong> testuser3,
-            <strong>Password:</strong> pass3
-          </li>
-          <li>
-            <strong>Username:</strong> testuser4,
-            <strong>Password:</strong> pass4
-          </li>
-          <li>
-            <strong>Username:</strong> testuser5,
-            <strong>Password:</strong> pass5
-          </li>
-          <li>
-            <strong>Username:</strong> testuser6,
-            <strong>Password:</strong> pass6
-          </li>
-        </ul>
+
+        <div style="margin: 15px 0">
+          <h4 style="color: #1976d2">Sample Data Users (3 users):</h4>
+          <ul>
+            <li>
+              <strong>Username:</strong> testuser1,
+              <strong>Password:</strong> pass1
+            </li>
+            <li>
+              <strong>Username:</strong> testuser2,
+              <strong>Password:</strong> pass2
+            </li>
+            <li>
+              <strong>Username:</strong> testuser3,
+              <strong>Password:</strong> pass3
+            </li>
+          </ul>
+        </div>
+
+        <div style="margin: 15px 0">
+          <h4 style="color: #f57c00">Full Database Users (6 users):</h4>
+          <ul>
+            <li>
+              <strong>Username:</strong> testuser1,
+              <strong>Password:</strong> pass1
+            </li>
+            <li>
+              <strong>Username:</strong> testuser2,
+              <strong>Password:</strong> pass2
+            </li>
+            <li>
+              <strong>Username:</strong> testuser3,
+              <strong>Password:</strong> pass3
+            </li>
+            <li>
+              <strong>Username:</strong> testuser4,
+              <strong>Password:</strong> pass4
+            </li>
+            <li>
+              <strong>Username:</strong> testuser5,
+              <strong>Password:</strong> pass5
+            </li>
+            <li>
+              <strong>Username:</strong> testuser6,
+              <strong>Password:</strong> pass6
+            </li>
+          </ul>
+        </div>
+
         <p>
           <em
-            >Note: Users 1-3 are sellers with 1000 items total (200 per
-            category), users 4-6 are buyers</em
-          >
-        </p>
-        <p>
-          <em
-            >Categories: Clothing, Accessories, Bags, Shoes, Sunglasses (200
-            items each)</em
+            >Note: Sample data creates 10 items across categories. Full database
+            creates 250 items total (50 per category: Clothing, Accessories,
+            Bags, Shoes, Sunglasses)</em
           >
         </p>
       </div>
@@ -207,10 +267,11 @@
 
     <script>
       async function populateDatabase() {
-        const button = document.querySelector(".button.secondary");
+        const button = event.target;
         const message = document.getElementById("message");
 
         button.disabled = true;
+        const originalText = button.textContent;
         button.textContent = "Populating...";
         message.style.display = "none";
 
@@ -240,7 +301,45 @@
         }
 
         button.disabled = false;
-        button.textContent = "Populate Database";
+        button.textContent = originalText;
+      }
+
+      async function populateSampleData() {
+        const button = event.target;
+        const message = document.getElementById("message");
+
+        button.disabled = true;
+        const originalText = button.textContent;
+        button.textContent = "Creating Sample Data...";
+        message.style.display = "none";
+
+        try {
+          const response = await fetch("/api/dashboard/populate-sample/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            message.textContent = data.message;
+            message.className = "message success";
+          } else {
+            message.textContent = data.error || "An error occurred";
+            message.className = "message error";
+          }
+
+          message.style.display = "block";
+        } catch (error) {
+          message.textContent = "Network error: " + error.message;
+          message.className = "message error";
+          message.style.display = "block";
+        }
+
+        button.disabled = false;
+        button.textContent = originalText;
       }
     </script>
   </body>
