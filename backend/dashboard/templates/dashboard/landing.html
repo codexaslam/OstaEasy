@@ -139,32 +139,7 @@
 
       <div class="populate-section">
         <h3>Database Population (For Testing)</h3>
-        <p>Choose your testing approach:</p>
-
-        <div
-          style="
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #e3f2fd;
-            border-radius: 8px;
-            border-left: 4px solid #2196f3;
-          "
-        >
-          <h4 style="margin-top: 0; color: #1976d2">
-            🚀 Quick Sample Data (Recommended for Testing)
-          </h4>
-          <p style="margin-bottom: 10px">
-            Creates <strong>3 test users and 10 sample items</strong> - perfect
-            for quick testing!
-          </p>
-          <button
-            class="button secondary"
-            onclick="populateSampleData()"
-            style="background-color: #2196f3"
-          >
-            Create Sample Data (Quick)
-          </button>
-        </div>
+        <p>Populate the database with demo data for testing:</p>
 
         <div
           style="
@@ -175,9 +150,7 @@
             border-left: 4px solid #ff9800;
           "
         >
-          <h4 style="margin-top: 0; color: #f57c00">
-            📊 Full Database Population (For Grading)
-          </h4>
+          <h4 style="margin-top: 0; color: #f57c00">📊 Database Population</h4>
           <p style="margin-bottom: 10px">
             Creates <strong>6 test users and 250 demo items</strong> (50 items
             per category) - optimized for performance!
@@ -187,7 +160,7 @@
             onclick="populateDatabase()"
             style="background-color: #ff9800"
           >
-            Populate Full Database
+            Populate Database
           </button>
         </div>
 
@@ -202,25 +175,7 @@
         </p>
 
         <div style="margin: 15px 0">
-          <h4 style="color: #1976d2">Sample Data Users (3 users):</h4>
-          <ul>
-            <li>
-              <strong>Username:</strong> testuser1,
-              <strong>Password:</strong> pass1
-            </li>
-            <li>
-              <strong>Username:</strong> testuser2,
-              <strong>Password:</strong> pass2
-            </li>
-            <li>
-              <strong>Username:</strong> testuser3,
-              <strong>Password:</strong> pass3
-            </li>
-          </ul>
-        </div>
-
-        <div style="margin: 15px 0">
-          <h4 style="color: #f57c00">Full Database Users (6 users):</h4>
+          <h4 style="color: #f57c00">Test Users (6 users):</h4>
           <ul>
             <li>
               <strong>Username:</strong> testuser1,
@@ -251,9 +206,8 @@
 
         <p>
           <em
-            >Note: Sample data creates 10 items across categories. Full database
-            creates 250 items total (50 per category: Clothing, Accessories,
-            Bags, Shoes, Sunglasses)</em
+            >Note: Database population creates 250 items total (50 per category:
+            Clothing, Accessories, Bags, Shoes, Sunglasses)</em
           >
         </p>
       </div>
@@ -277,44 +231,6 @@
 
         try {
           const response = await fetch("/api/dashboard/populate-database/", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            message.textContent = data.message;
-            message.className = "message success";
-          } else {
-            message.textContent = data.error || "An error occurred";
-            message.className = "message error";
-          }
-
-          message.style.display = "block";
-        } catch (error) {
-          message.textContent = "Network error: " + error.message;
-          message.className = "message error";
-          message.style.display = "block";
-        }
-
-        button.disabled = false;
-        button.textContent = originalText;
-      }
-
-      async function populateSampleData() {
-        const button = event.target;
-        const message = document.getElementById("message");
-
-        button.disabled = true;
-        const originalText = button.textContent;
-        button.textContent = "Creating Sample Data...";
-        message.style.display = "none";
-
-        try {
-          const response = await fetch("/api/dashboard/populate-sample/", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
